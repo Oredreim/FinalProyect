@@ -71,7 +71,7 @@ public class MenuState extends State{
                 }
         ));
 
-        /*buttons.add(new Button(
+        buttons.add(new Button(
                 Assets.greyBtn,
                 Assets.blueBtn,
                 400,
@@ -80,10 +80,10 @@ public class MenuState extends State{
                 new Action() {
                     @Override
                     public void doAction() {
-                        State.changeState(new GameStateVSplayer());
+                        State.changeState(new Seleccion(2,string));
                     }
                 }
-        ));*/
+        ));
 
         /**
          * Boton salida de juego

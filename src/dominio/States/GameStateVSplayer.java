@@ -219,7 +219,7 @@ public class GameStateVSplayer extends States {
                 } else if (player1.getScore() < player2.getScore()) {
                     State.changeState(new GameOver(tipo, "Player 2 game´s winner", player1.getScore(), string, personaje1, personaje2, background));
                 } else {
-                    State.changeState(new GameOver(tipo, "Draaw", player1.getScore(), string, personaje1, personaje2, background));
+                    State.changeState(new GameOver(tipo, "Draw", player1.getScore(), string, personaje1, personaje2, background));
                 }
             }
         }
