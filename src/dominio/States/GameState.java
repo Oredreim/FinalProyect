@@ -10,6 +10,7 @@ import dominio.Obstaculos.Turtles.*;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
 import dominio.Players.Humans.Player;
+import dominio.Sorpresas.Sorpresas;
 import dominio.Vector2D;
 import presentacion.*;
 import presentacion.Button;
