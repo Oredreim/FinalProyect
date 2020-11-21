@@ -85,6 +85,20 @@ public class MenuState extends State{
                 }
         ));
 
+        buttons.add(new Button(
+                Assets.greyBtn,
+                Assets.blueBtn,
+                400,
+                345 - Assets.greyBtn.getHeight(),
+                "Prubea Piñeros",
+                new Action() {
+                    @Override
+                    public void doAction() {
+                        State.changeState(new Seleccion(2,string));
+                    }
+                }
+        ));
+
         /**
          * Boton salida de juego
          */
