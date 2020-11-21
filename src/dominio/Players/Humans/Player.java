@@ -7,6 +7,7 @@ import dominio.Obstaculos.Trunks.Trunk;
 import dominio.Obstaculos.Turtles.Turtle;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
+import dominio.Sorpresas.Sorpresas;
 import presentacion.*;
 
 import java.awt.*;
@@ -22,7 +23,7 @@ public  class Player extends Jugador {
     }
 
     @Override
-    public void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos) {
+    public void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos, ArrayList<Sorpresas> sorpresas) {
 
         boolean muere=false;
         muere=interacciones(cars, trunks, turtles,charcos);

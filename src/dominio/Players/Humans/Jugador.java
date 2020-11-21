@@ -9,6 +9,7 @@ import dominio.Obstaculos.Turtles.TurtleB;
 import dominio.Obstaculos.Turtles.TurtleD;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
+import dominio.Sorpresas.Sorpresas;
 import presentacion.Assets;
 
 import java.awt.*;
@@ -315,7 +316,7 @@ public abstract class Jugador {
     }
     public abstract int getLives();
     public abstract int getScore();
-    public abstract void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos);
+    public abstract void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos, ArrayList<Sorpresas> sorpresas);
 
     public abstract void draw(Graphics g);
 
