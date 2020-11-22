@@ -2,6 +2,7 @@ package presentacion;
 
 import dominio.*;
 
+import javax.sound.sampled.LineUnavailableException;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -25,7 +26,7 @@ public class Button {
         this.action = action;
     }
 
-    public void update() {
+    public void update() throws LineUnavailableException {
         if(boundingBox.contains(MouseInput.X, MouseInput.Y)) {
             mouseIn = true;
         }else {

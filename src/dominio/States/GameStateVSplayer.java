@@ -1,22 +1,24 @@
 package dominio.States;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-
-import dominio.Obstaculos.Cars.*;
-import dominio.Obstaculos.Trunks.Trunk;
+import dominio.Obstaculos.Cars.Car;
 import dominio.Obstaculos.Trunks.TrunkA;
 import dominio.Obstaculos.Trunks.TrunkB;
 import dominio.Obstaculos.Trunks.TrunkC;
-import dominio.Obstaculos.Turtles.*;
+import dominio.Obstaculos.Turtles.Turtle;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
 import dominio.Players.Humans.Player;
 import dominio.Players.Humans.Player2;
 import dominio.Vector2D;
-import presentacion.*;
-import presentacion.Button;
+import presentacion.Assets;
+import presentacion.KeyBoard;
+import presentacion.Message;
+import presentacion.State;
+
+import javax.sound.sampled.LineUnavailableException;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class GameStateVSplayer extends States {
 
@@ -27,7 +29,8 @@ public class GameStateVSplayer extends States {
     protected ArrayList<Ganar> winp1 = new ArrayList<>();
     protected ArrayList<Ganar> winp2 = new ArrayList<>();
 
-    public GameStateVSplayer(int tipo,ArrayList<BufferedImage> personaje1, ArrayList<BufferedImage> personaje2, BufferedImage background, String string) {
+    public GameStateVSplayer(int tipo,ArrayList<BufferedImage> personaje1, ArrayList<BufferedImage> personaje2, BufferedImage background, String string) throws LineUnavailableException {
+
         this.tipo=tipo;
         this.background=background;
         this.personaje1=personaje1;
@@ -171,8 +174,14 @@ public class GameStateVSplayer extends States {
         Lives live10p2 = new Lives(new Vector2D(895,680),personaje2.get(14));
         livesp2.add(live10p2);
     }
+
     @Override
-    public void update() {
+    public void sounds() {
+        super.sounds();
+    }
+
+    @Override
+    public void update() throws LineUnavailableException {
 
         if(KeyBoard.pause && !pausa) {
             pausa = true;
@@ -204,13 +213,13 @@ public class GameStateVSplayer extends States {
                 player1.llego = 0;
                 player2.llego = 0;
                 cambia = false;
+                sounds();
                 if(level>1) {
                     player1.cargavidas();
                     player2.cargavidas();
                 }
             }
             if (player1.llego == 7) {
-
                 sube = true;
             }
             if (sube && level == 5) {

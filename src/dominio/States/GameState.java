@@ -1,20 +1,20 @@
 package dominio.States;
 
-import dominio.Obstaculos.Cars.*;
-import dominio.Obstaculos.Charco.Charco;
-import dominio.Obstaculos.Trunks.Trunk;
+import dominio.Obstaculos.Cars.Car;
 import dominio.Obstaculos.Trunks.TrunkA;
 import dominio.Obstaculos.Trunks.TrunkB;
 import dominio.Obstaculos.Trunks.TrunkC;
-import dominio.Obstaculos.Turtles.*;
+import dominio.Obstaculos.Turtles.Turtle;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
 import dominio.Players.Humans.Player;
-import dominio.Sorpresas.Sorpresas;
 import dominio.Vector2D;
-import presentacion.*;
-import presentacion.Button;
+import presentacion.Assets;
+import presentacion.KeyBoard;
+import presentacion.Message;
+import presentacion.State;
 
+import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -25,7 +25,8 @@ public class GameState extends States {
     protected ArrayList<Lives> lives = new ArrayList<>();
     protected ArrayList<Ganar> win = new ArrayList<>();
 
-    public GameState(int tipo,ArrayList<BufferedImage> personaje, BufferedImage background, String string) {
+    public GameState(int tipo,ArrayList<BufferedImage> personaje, BufferedImage background, String string) throws LineUnavailableException {
+        this();
         this.tipo=tipo;
         this.string=string;
         this.background=background;
@@ -51,6 +52,9 @@ public class GameState extends States {
         ganar();
         lives();
         player1 = new Player(new Vector2D(300, 635), personaje.get(0),personaje1,lives);
+    }
+
+    public GameState() throws LineUnavailableException {
     }
 
     public void carsA(){
@@ -130,8 +134,14 @@ public class GameState extends States {
         Lives live10p1 = new Lives(new Vector2D(135,680),personaje1.get(14));
         lives.add(live10p1);
     }
+
     @Override
-    public void update() {
+    public void sounds() {
+        super.sounds();
+    }
+
+    @Override
+    public void update() throws LineUnavailableException {
         if(KeyBoard.pause && !pausa) {
             pausa = true;
         }
@@ -149,6 +159,7 @@ public class GameState extends States {
                 player1.position.setY(635);
                 player1.llego = 0;
                 cambia = false;
+                sounds();
                 if(level>1){
                     player1.cargavidas();
                 }

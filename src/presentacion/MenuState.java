@@ -1,11 +1,13 @@
 package presentacion;
+import dominio.States.Seleccion;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-
-import dominio.States.Seleccion;
 
 public class MenuState extends State{
 
@@ -13,9 +15,17 @@ public class MenuState extends State{
     private String string;
     File archivo;
     FileInputStream entrada;
+    private Clip moneda = AudioSystem.getClip();
 
-    public MenuState(String string) {
+    public MenuState(String string) throws LineUnavailableException {
+        Assets.init();
+        try {
+            moneda.open(AudioSystem.getAudioInputStream(Assets.inicia));
+            moneda.start();
 
+        } catch (Exception fallo) {
+            System.out.println(fallo);
+        }
 
         this.string = string;
         buttons = new ArrayList<Button>();
@@ -31,10 +41,12 @@ public class MenuState extends State{
                 "1 player",
                 new Action() {
                     @Override
-                    public void doAction() {
+                    public void doAction() throws LineUnavailableException {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
+                        moneda.stop();
                         State.changeState(new Seleccion(1,string));
+
                     }
                 }
 
@@ -47,9 +59,10 @@ public class MenuState extends State{
                 "Vs. Player",
                 new Action() {
                     @Override
-                    public void doAction() {
+                    public void doAction() throws LineUnavailableException {
                     	//GameState.getPlayer().setName(nombre1);
                     	//GameState.getPlayer2().setName(nombre2);
+                        moneda.stop();
                         State.changeState(new Seleccion(2,string));
                     }
                 }
@@ -65,7 +78,7 @@ public class MenuState extends State{
 
                 new Action() {
                     @Override
-                    public void doAction() {
+                    public void doAction() throws LineUnavailableException {
                         State.changeState(new Seleccion(2,string));
                     }
                 }
@@ -79,21 +92,7 @@ public class MenuState extends State{
                 "Spectate",
                 new Action() {
                     @Override
-                    public void doAction() {
-                        State.changeState(new Seleccion(2,string));
-                    }
-                }
-        ));
-
-        buttons.add(new Button(
-                Assets.greyBtn,
-                Assets.blueBtn,
-                400,
-                345 - Assets.greyBtn.getHeight(),
-                "Prubea Piñeros",
-                new Action() {
-                    @Override
-                    public void doAction() {
+                    public void doAction() throws LineUnavailableException {
                         State.changeState(new Seleccion(2,string));
                     }
                 }
@@ -114,6 +113,7 @@ public class MenuState extends State{
                     @Override
                     public void doAction() {
                         System.exit(0);
+
                     }
                 }
         ));
@@ -139,7 +139,7 @@ public class MenuState extends State{
     }
 
     @Override
-    public void update() {
+    public void update() throws LineUnavailableException {
         for(Button b: buttons) {
             b.update();
         }

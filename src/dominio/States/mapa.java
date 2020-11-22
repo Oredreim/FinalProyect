@@ -1,9 +1,11 @@
 package dominio.States;
 
 import dominio.Vector2D;
-import presentacion.*;
 import presentacion.Button;
+import presentacion.*;
 
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,7 +17,7 @@ public class mapa extends State{
     private String string;
     File archivo;
     FileInputStream entrada;
-    public mapa(int tipo, ArrayList<BufferedImage> personaje1, ArrayList<BufferedImage> personaje2, String string){
+    public mapa(int tipo, ArrayList<BufferedImage> personaje1, ArrayList<BufferedImage> personaje2, String string, Clip elegir){
         this.string = string;
         buttons = new ArrayList<>();
         buttons.add(new Button(
@@ -26,7 +28,12 @@ public class mapa extends State{
                 "día",
                 new Action() {
                     @Override
-                    public void doAction() {
+                    public void doAction() throws LineUnavailableException {
+                        try {
+                            elegir.stop();
+                        } catch (Exception fallo) {
+                            System.out.println(fallo);
+                        }
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
                         if (tipo==1){
@@ -48,9 +55,14 @@ public class mapa extends State{
                 "noche",
                 new Action() {
                     @Override
-                    public void doAction() {
+                    public void doAction() throws LineUnavailableException {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
+                        try {
+                            elegir.stop();
+                        } catch (Exception fallo) {
+                            System.out.println(fallo);
+                        }
                         if (tipo==1){
                             State.changeState(new GameState(tipo,personaje1,Assets.backgroundnoche,string));
                         }
@@ -81,7 +93,7 @@ public class mapa extends State{
         }return partes;
     }
     @Override
-    public void update() {
+    public void update() throws LineUnavailableException {
         for(Button b: buttons) {
             b.update();
         }

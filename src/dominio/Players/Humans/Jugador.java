@@ -1,6 +1,5 @@
 package dominio.Players.Humans;
 
-import dominio.*;
 import dominio.Obstaculos.Cars.Car;
 import dominio.Obstaculos.Charco.Charco;
 import dominio.Obstaculos.Trunks.Trunk;
@@ -9,7 +8,7 @@ import dominio.Obstaculos.Turtles.TurtleB;
 import dominio.Obstaculos.Turtles.TurtleD;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
-import dominio.Sorpresas.Sorpresas;
+import dominio.Vector2D;
 import presentacion.Assets;
 
 import java.awt.*;
@@ -316,7 +315,7 @@ public abstract class Jugador {
     }
     public abstract int getLives();
     public abstract int getScore();
-    public abstract void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos, ArrayList<Sorpresas> sorpresas);
+    public abstract void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos);
 
     public abstract void draw(Graphics g);
 

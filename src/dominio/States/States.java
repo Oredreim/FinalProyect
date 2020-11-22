@@ -7,15 +7,16 @@ import dominio.Obstaculos.Trunks.TrunkA;
 import dominio.Obstaculos.Trunks.TrunkB;
 import dominio.Obstaculos.Trunks.TrunkC;
 import dominio.Obstaculos.Turtles.*;
-import dominio.Players.Generales.Ganar;
-import dominio.Players.Generales.Lives;
-import dominio.Players.Humans.Player;
 import dominio.Vector2D;
-import presentacion.*;
 import presentacion.Button;
+import presentacion.*;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public abstract class States extends State {
@@ -36,8 +37,9 @@ public abstract class States extends State {
     protected int tipo;
     protected int subir=0;
     protected boolean cambia=false;
+    protected Clip backsound = AudioSystem.getClip();
 
-    public States(){};
+    public States() throws LineUnavailableException {};
 
 
     public void carsA(){
@@ -185,10 +187,34 @@ public abstract class States extends State {
         Car.speed+=0.3;
         Turtle.speed+=0.3;
     }
-    public void update(){
+    public void sounds(){
+        InputStream back=Assets.backsound1;
+        if(level==2){
+            back=Assets.backsound2;
+        }
+        else if(level==3){
+            back=Assets.backsound3;
+        }
+        else if(level==4){
+            back=Assets.backsound4;
+        }
+        else if(level==5){
+            back=Assets.backsound5;
+        }
+        try {
+            backsound.open(AudioSystem.getAudioInputStream(back));
+            backsound.start();
+            backsound.loop(Clip.LOOP_CONTINUOUSLY);
+
+        } catch (Exception fallo) {
+            System.out.println(fallo);
+        }
+    }
+    public void update() throws LineUnavailableException {
 
         if(KeyBoard.exit){
             State.changeState(new MenuState(string));
+
         }
 
         for (int i = 0; i < cars.size(); i++) {

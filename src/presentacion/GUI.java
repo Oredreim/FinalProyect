@@ -1,12 +1,9 @@
 package presentacion;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import javax.sound.sampled.LineUnavailableException;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferStrategy;
-
-import javax.swing.JFrame;
 
 
 public class GUI extends JFrame implements Runnable {
@@ -27,6 +24,7 @@ public class GUI extends JFrame implements Runnable {
 
     private KeyBoard keyBoard;
     private MouseInput mouseInput;
+
 
     public GUI() {
         setTitle("Frogger-GAME");
@@ -58,7 +56,7 @@ public class GUI extends JFrame implements Runnable {
         new GUI().start();
     }
 
-    private void update(float dt){
+    private void update(float dt) throws LineUnavailableException {
     	//Se actualiza el tablero que se esta utilizando
         keyBoard.update();
         //Actualizaci�n del estado actual
@@ -94,7 +92,7 @@ public class GUI extends JFrame implements Runnable {
 
 
     //metodo que inicializa cada uno de los elementos que conforman el tablero y actualiza el estado
-    private void init(){
+    private void init() throws LineUnavailableException {
         Assets.init();
         State.changeState(new MenuState(" "));
     }
@@ -107,7 +105,11 @@ public class GUI extends JFrame implements Runnable {
         long lastTime = System.nanoTime();
         int frames = 0;
         long time = 0;
-        init();
+        try {
+            init();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
         //Bucle que controla el tiempo para la actualizacion
         while(running)
         {
@@ -118,7 +120,11 @@ public class GUI extends JFrame implements Runnable {
 
             if(delta >= 1)
             {
-                update((float) (delta * TARGETTIME * 0.000001f));
+                try {
+                    update((float) (delta * TARGETTIME * 0.000001f));
+                } catch (LineUnavailableException e) {
+                    e.printStackTrace();
+                }
                 draw();
                 delta --;
                 frames ++;

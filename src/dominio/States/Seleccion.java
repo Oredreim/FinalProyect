@@ -1,9 +1,12 @@
 package dominio.States;
 
 import dominio.Vector2D;
-import presentacion.*;
 import presentacion.Button;
+import presentacion.*;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -17,7 +20,16 @@ public class Seleccion extends  State{
     private String string;
     File archivo;
     FileInputStream entrada;
-    public Seleccion(int tipo, String string){
+    private Clip elegir = AudioSystem.getClip();
+    public Seleccion(int tipo, String string) throws LineUnavailableException {
+        try {
+            elegir.open(AudioSystem.getAudioInputStream(Assets.selec));
+
+            elegir.start();
+
+        } catch (Exception fallo) {
+            System.out.println(fallo);
+        }
         //Texturas verde
         verde.add(Assets.player1up3);
         verde.add(Assets.player1up2);
@@ -65,7 +77,7 @@ public class Seleccion extends  State{
                     public void doAction() {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
-                        State.changeState(new mapa(tipo, verde, roja,string));
+                        State.changeState(new mapa(tipo, verde, roja,string,elegir));
 
                     }
                 }
@@ -82,12 +94,13 @@ public class Seleccion extends  State{
                     public void doAction() {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
-                        State.changeState(new mapa(tipo, roja, verde,string));
+                        State.changeState(new mapa(tipo, roja, verde,string,elegir));
                     }
                 }
 
         ));
     }
+    
     public String[] abrir(File archivo) {
         String[] partes = null;
         String documento = "";
@@ -107,7 +120,7 @@ public class Seleccion extends  State{
         }return partes;
     }
     @Override
-    public void update() {
+    public void update() throws LineUnavailableException {
         for(Button b: buttons) {
             b.update();
         }

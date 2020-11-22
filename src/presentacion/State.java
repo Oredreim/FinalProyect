@@ -1,8 +1,7 @@
 package presentacion;
 
-import javax.swing.*;
-
-import java.awt.Graphics;
+import javax.sound.sampled.LineUnavailableException;
+import java.awt.*;
 
 public abstract class State {
 
@@ -13,6 +12,6 @@ public abstract class State {
         currentState = newState;
     }
 
-    public abstract void update() ;
+    public abstract void update() throws LineUnavailableException;
     public abstract void draw(Graphics g);
 }

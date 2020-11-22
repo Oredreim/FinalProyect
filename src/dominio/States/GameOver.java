@@ -1,13 +1,12 @@
 package dominio.States;
 
 import dominio.Vector2D;
-import presentacion.*;
 import presentacion.Button;
+import presentacion.*;
 
+import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 
 public class GameOver extends State {
@@ -16,6 +15,7 @@ public class GameOver extends State {
     private String text;
     private int score;
     public GameOver(int tipo, String text, int score, String string, ArrayList<BufferedImage>personaje1, ArrayList<BufferedImage>personaje2, BufferedImage background){
+        Assets.init();
         this.text=text;
         this.score=score;
         this.string = string;
@@ -28,7 +28,7 @@ public class GameOver extends State {
                 "Menu principal",
                 new Action() {
                     @Override
-                    public void doAction() {
+                    public void doAction() throws LineUnavailableException {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
                         State.changeState(new MenuState(string));
@@ -44,7 +44,7 @@ public class GameOver extends State {
                 "Reintentar",
                 new Action() {
                     @Override
-                    public void doAction() {
+                    public void doAction() throws LineUnavailableException {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
                         if(tipo==1){
@@ -60,7 +60,7 @@ public class GameOver extends State {
     }
 
     @Override
-    public void update() {
+    public void update() throws LineUnavailableException {
         for(Button b: buttons) {
             b.update();
         }

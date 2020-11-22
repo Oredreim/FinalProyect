@@ -1,14 +1,15 @@
 package dominio.Players.Humans;
 
-import dominio.*;
 import dominio.Obstaculos.Cars.Car;
 import dominio.Obstaculos.Charco.Charco;
 import dominio.Obstaculos.Trunks.Trunk;
 import dominio.Obstaculos.Turtles.Turtle;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
-import dominio.Sorpresas.Sorpresas;
-import presentacion.*;
+import dominio.Vector2D;
+import presentacion.Assets;
+import presentacion.KeyBoard;
+import presentacion.Text;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -23,7 +24,7 @@ public  class Player extends Jugador {
     }
 
     @Override
-    public void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos, ArrayList<Sorpresas> sorpresas) {
+    public void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos) {
 
         boolean muere=false;
         muere=interacciones(cars, trunks, turtles,charcos);
