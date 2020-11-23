@@ -199,17 +199,20 @@ public class GameStateVSplayer extends States {
                     player2.update(winp2, cars, trunks, turtles, charcos);
                 }
             } else if (player1.getLives() == 0 && player2.getLives() == 0) {
+                backsound.close();
                 if (player1.getScore() > player2.getScore()) {
-                    State.changeState(new GameOver(tipo, "Game over player 1 win", player1.getScore(), string, personaje1, personaje2, background));
+                    State.changeState(new GameOver(tipo, "Game over player 1 win", player1.getScore(), string, personaje1, personaje2, background,"l"));
                 } else if (player1.getScore() < player2.getScore()) {
-                    State.changeState(new GameOver(tipo, "Game over player 2 win", player2.getScore(), string, personaje1, personaje2, background));
+                    State.changeState(new GameOver(tipo, "Game over player 2 win", player2.getScore(), string, personaje1, personaje2, background,"l"));
                 } else {
-                    State.changeState(new GameOver(tipo, "Game over draw", player1.getScore(), string, personaje1, personaje2, background));
+                    State.changeState(new GameOver(tipo, "Game over draw", player1.getScore(), string, personaje1, personaje2, background,"l"));
                 }
             }
             if (cambia) {
                 player1.position.setY(635);
                 player2.position.setY(635);
+                player1.reiniciar(winp1);
+                player2.reiniciar(winp2);
                 player1.llego = 0;
                 player2.llego = 0;
                 cambia = false;
@@ -219,16 +222,23 @@ public class GameStateVSplayer extends States {
                     player2.cargavidas();
                 }
             }
-            if (player1.llego == 7) {
+            if (player1.llego == 1) {
+                player1.llego=0;
+                player2.llego=0;
+                System.out.print("entra");
+                System.out.println("\n");
+                backsound.close();
+                detiene=true;
                 sube = true;
             }
-            if (sube && level == 5) {
+            if (sube && level == 6) {
                 if (player1.getScore() > player2.getScore()) {
-                    State.changeState(new GameOver(tipo, "Player 1 game´s winner", player1.getScore(), string, personaje1, personaje2, background));
+                    backsound.close();
+                    State.changeState(new GameOver(tipo, "Player 1 game´s winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
                 } else if (player1.getScore() < player2.getScore()) {
-                    State.changeState(new GameOver(tipo, "Player 2 game´s winner", player1.getScore(), string, personaje1, personaje2, background));
+                    State.changeState(new GameOver(tipo, "Player 2 game´s winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
                 } else {
-                    State.changeState(new GameOver(tipo, "Draw", player1.getScore(), string, personaje1, personaje2, background));
+                    State.changeState(new GameOver(tipo, "Draw", player1.getScore(), string, personaje1, personaje2, background,"w"));
                 }
             }
         }

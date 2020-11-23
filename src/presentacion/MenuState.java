@@ -18,9 +18,9 @@ public class MenuState extends State{
     private Clip moneda = AudioSystem.getClip();
 
     public MenuState(String string) throws LineUnavailableException {
-        Assets.init();
+        Sounds.init();
         try {
-            moneda.open(AudioSystem.getAudioInputStream(Assets.inicia));
+            moneda.open(AudioSystem.getAudioInputStream(Sounds.inicia));
             moneda.start();
 
         } catch (Exception fallo) {

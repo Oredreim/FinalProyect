@@ -8,7 +8,6 @@ import dominio.Obstaculos.Trunks.TrunkB;
 import dominio.Obstaculos.Trunks.TrunkC;
 import dominio.Obstaculos.Turtles.*;
 import dominio.Vector2D;
-import presentacion.Button;
 import presentacion.*;
 
 import javax.sound.sampled.AudioSystem;
@@ -29,15 +28,17 @@ public abstract class States extends State {
 
     protected ArrayList<BufferedImage> personaje1,personaje2;
     protected BufferedImage background;
-    protected Button volver,reintentar;
     protected String string;
     protected boolean pausa=false;
     protected boolean sube=true;
     protected int level;
     protected int tipo;
-    protected int subir=0;
+    protected boolean primera = true;
+    protected boolean detiene = false;
     protected boolean cambia=false;
     protected Clip backsound = AudioSystem.getClip();
+    private InputStream back;
+
 
     public States() throws LineUnavailableException {};
 
@@ -188,23 +189,50 @@ public abstract class States extends State {
         Turtle.speed+=0.3;
     }
     public void sounds(){
-        InputStream back=Assets.backsound1;
-        if(level==2){
-            back=Assets.backsound2;
+        if(level==1){
+            back=Sounds.backsound1;
+        }
+        else if(level==2){
+            back=Sounds.backsound2;
         }
         else if(level==3){
-            back=Assets.backsound3;
+            back=Sounds.backsound3;
         }
         else if(level==4){
-            back=Assets.backsound4;
+            back=Sounds.backsound4;
         }
         else if(level==5){
-            back=Assets.backsound5;
+            back=Sounds.backsound5;
         }
+        reproduce(back,true);
+    }
+    public void dicenivel(){
+        if (level==1){
+            back=Sounds.roundone;
+        }
+        if(level==2){
+            back=Sounds.roundtwo;
+        }
+        else if(level==3){
+            back=Sounds.roundthree;
+        }
+        else if(level==4){
+            back=Sounds.roundfour;
+        }
+        else if(level==5){
+            back=Sounds.roundfive;
+
+        }
+        reproduce(back,false);
+
+    }
+    public void reproduce(InputStream back, boolean loop){
         try {
             backsound.open(AudioSystem.getAudioInputStream(back));
             backsound.start();
-            backsound.loop(Clip.LOOP_CONTINUOUSLY);
+            if(loop){
+                backsound.loop(Clip.LOOP_CONTINUOUSLY);
+            }
 
         } catch (Exception fallo) {
             System.out.println(fallo);
@@ -214,7 +242,6 @@ public abstract class States extends State {
 
         if(KeyBoard.exit){
             State.changeState(new MenuState(string));
-
         }
 
         for (int i = 0; i < cars.size(); i++) {
@@ -230,6 +257,7 @@ public abstract class States extends State {
         for (int i = 0; i < turtles.size(); i++) {
             turtles.get(i).update();
         }
+
     }
     public void draw(Graphics g) {
         g.drawImage(background, 0, 0, null);
@@ -245,26 +273,26 @@ public abstract class States extends State {
         for (int i = 0; i < turtles.size(); i++) {
             turtles.get(i).draw(g);
         }
-        if(sube ){
-            if(subir ==0){
-                level+=1;
+        if(sube ) {
+            if (backsound.getMicrosecondLength() == 0 ||detiene) {
+                detiene=false;
+                level++;
+                dicenivel();
             }
-            Text.drawText(g,"LEVEL UP",new Vector2D(450,300),true, Color.RED,Assets.fontBig);
-            Text.drawText(g,"ROUND "+Integer.toString(level),new Vector2D(450,550),true, Color.RED,Assets.fontBig);
-            subir++;
-            if(subir==50) {
-                subir = 0;
-            }
-            if(subir==0){
+
+            Text.drawText(g, "LEVEL UP", new Vector2D(450, 300), true, Color.RED, Assets.fontBig);
+            Text.drawText(g, "ROUND " + Integer.toString(level), new Vector2D(450, 550), true, Color.RED, Assets.fontBig);
+            /*System.out.print(backsound.getMicrosecondLength() == backsound.getMicrosecondPosition());
+            System.out.println("\n");*/
+            if (backsound.getMicrosecondLength() == backsound.getMicrosecondPosition()) {
+
+                backsound.close();
                 levelup();
-                sube=false;
-                cambia=true;
+                sounds();
+                sube = false;
+                cambia = true;
+                primera=false;
             }
-
-
-
         }
-
-
     }
 }

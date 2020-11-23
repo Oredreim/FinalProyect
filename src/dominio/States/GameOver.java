@@ -4,9 +4,12 @@ import dominio.Vector2D;
 import presentacion.Button;
 import presentacion.*;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class GameOver extends State {
@@ -14,8 +17,17 @@ public class GameOver extends State {
     private String string;
     private String text;
     private int score;
-    public GameOver(int tipo, String text, int score, String string, ArrayList<BufferedImage>personaje1, ArrayList<BufferedImage>personaje2, BufferedImage background){
-        Assets.init();
+    protected Clip backsound = AudioSystem.getClip();
+    private InputStream back;
+    public GameOver(int tipo, String text, int score, String string, ArrayList<BufferedImage>personaje1, ArrayList<BufferedImage>personaje2, BufferedImage background,String res) throws LineUnavailableException {
+        if(res=="w"){
+            back=Sounds.win;
+        }
+        else {
+            back=Sounds.lose;
+        }
+        reproduce(back);
+        Sounds.init();
         this.text=text;
         this.score=score;
         this.string = string;
@@ -58,7 +70,15 @@ public class GameOver extends State {
 
         ));
     }
+    public void reproduce(InputStream back){
+        try {
+            backsound.open(AudioSystem.getAudioInputStream(back));
+            backsound.start();
 
+        } catch (Exception fallo) {
+            System.out.println(fallo);
+        }
+    }
     @Override
     public void update() throws LineUnavailableException {
         for(Button b: buttons) {

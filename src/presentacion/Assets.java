@@ -2,7 +2,6 @@ package presentacion;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
 
 //Clase Assets que maneja las imagenes del directorio y pertenece al paquete de presentacion
 public class Assets {
@@ -81,20 +80,7 @@ public class Assets {
     public static Font fontBig;
     public static Font fontEnd;
 
-    public static InputStream inicia;
-    public static InputStream selec;
-    public static InputStream roundone;
-    public static InputStream roundtwo;
-    public static InputStream roundthree;
-    public static InputStream roundfour;
-    public static InputStream roundfive;
-    public static InputStream lose;
-    public static InputStream win;
-    public static InputStream backsound1;
-    public static InputStream backsound2;
-    public static InputStream backsound3;
-    public static InputStream backsound4;
-    public static InputStream backsound5;
+
 
 
     //Metodo que da valor a las variables locales
@@ -170,16 +156,7 @@ public class Assets {
         fontEnd = Loader.loadFont("/res/futureFont.ttf", 50);
         fontBig = Loader.loadFont("/res/futureFont.ttf", 100);
 
-        inicia= Assets.class.getResourceAsStream("/res/start.wav");
-        selec= Assets.class.getResourceAsStream("/res/selec.wav");
-        roundone= Assets.class.getResourceAsStream("/res/roundone.wav");
-        roundtwo= Assets.class.getResourceAsStream("/res/roundtwo.wav");
-        roundthree= Assets.class.getResourceAsStream("/res/roundthree.wav");
-        roundfour= Assets.class.getResourceAsStream("/res/roundfour.wav");
-        roundfive= Assets.class.getResourceAsStream("/res/roundfive.wav");
-        lose= Assets.class.getResourceAsStream("/res/gameover.wav");
-        win= Assets.class.getResourceAsStream("/res/win.wav");
-        backsound1= Assets.class.getResourceAsStream("/res/backsound1.wav");
+
 
 
     }

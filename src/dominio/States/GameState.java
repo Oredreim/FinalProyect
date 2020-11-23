@@ -153,30 +153,37 @@ public class GameState extends States {
                 super.update();
                 player1.update(win, cars, trunks, turtles, charcos);
             } else if (player1.getLives() == 0) {
-                State.changeState(new GameOver(tipo, "Game over", player1.getScore(), string, personaje1, personaje2, background));
+                backsound.close();
+                State.changeState(new GameOver(tipo, "Game over", player1.getScore(), string, personaje1, personaje2, background,"l"));
             }
             if (cambia) {
+                player1.reiniciar(win);
                 player1.position.setY(635);
-                player1.llego = 0;
                 cambia = false;
-                sounds();
                 if(level>1){
                     player1.cargavidas();
+
                 }
             }
-            if (player1.llego == 7) {
+            if (player1.llego == 1) {
+                player1.llego=0;
+                System.out.print("entra");
+                System.out.println("\n");
+                backsound.close();
+                detiene=true;
                 sube = true;
             }
 
-            if (sube && level == 5) {
-                State.changeState(new GameOver(tipo, "Yow winner", player1.getScore(), string, personaje1, personaje2, background));
+            if (sube && level == 6) {
+                backsound.close();
+                State.changeState(new GameOver(tipo, "Yow winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
             }
         }
     }
 
     @Override
     public void draw(Graphics g) {
-        if ((!sube) || (sube && level < 5)) {
+        if ((!sube) || (sube && level <= 5)) {
             super.draw(g);
             for (int i = 0; i < win.size(); i++) {
                 win.get(i).draw(g);

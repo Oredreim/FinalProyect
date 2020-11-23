@@ -273,35 +273,17 @@ public abstract class Jugador {
         position.setX(position.getX() + 2.25);
     }
     public void reiniciar(ArrayList<Ganar> win) {
-        if (reinicia == 0) {
-            win.get(0).update( personaje.get(12));
-        } else if (reinicia == 10) {
-            win.get(1).update( personaje.get(12));
-        } else if (reinicia == 20) {
-            win.get(2).update( personaje.get(12));
-        } else if (reinicia == 30) {
-            win.get(3).update( personaje.get(12));
-        } else if (reinicia == 40) {
-            win.get(4).update(personaje.get(12));
-        } else if (reinicia == 50) {
-            win.get(5).update(personaje.get(12));
-        } else if (reinicia == 60) {
-            win.get(6).update( personaje.get(12));
-        } else if (reinicia == 70) {
-            win.get(0).update( Assets.blanco);
-            win.get(2).update( Assets.blanco);
-            win.get(4).update( Assets.blanco);
-            win.get(6).update( Assets.blanco);
-            win.get(8).update( Assets.blanco);
-            win.get(10).update( Assets.blanco);
-            win.get(12).update( Assets.blanco);
-            movido=0;
-            llego=0;
-            reinicia=-1;
-            position.setX(300);
-            position.setY(635);
-        }
-        reinicia++;
+        win.get(0).update( Assets.blanco);
+        win.get(1).update( Assets.blanco);
+        win.get(2).update( Assets.blanco);
+        win.get(3).update( Assets.blanco);
+        win.get(4).update( Assets.blanco);
+        win.get(5).update( Assets.blanco);
+        win.get(6).update( Assets.blanco);
+        movido=0;
+        llego=0;
+        position.setX(x);
+        position.setY(635);
     }
     public void cargavidas(){
         if(lives==10){

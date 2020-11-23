@@ -23,7 +23,7 @@ public class Seleccion extends  State{
     private Clip elegir = AudioSystem.getClip();
     public Seleccion(int tipo, String string) throws LineUnavailableException {
         try {
-            elegir.open(AudioSystem.getAudioInputStream(Assets.selec));
+            elegir.open(AudioSystem.getAudioInputStream(Sounds.selec));
 
             elegir.start();
 
