@@ -18,14 +18,7 @@ public class MenuState extends State{
     private Clip moneda = AudioSystem.getClip();
 
     public MenuState(String string) throws LineUnavailableException {
-        Sounds.init();
-        try {
-            moneda.open(AudioSystem.getAudioInputStream(Sounds.inicia));
-            moneda.start();
-
-        } catch (Exception fallo) {
-            System.out.println(fallo);
-        }
+        Sounds.reproduce(moneda,Sounds.inicia,false);
 
         this.string = string;
         buttons = new ArrayList<Button>();
@@ -44,7 +37,7 @@ public class MenuState extends State{
                     public void doAction() throws LineUnavailableException {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
-                        moneda.stop();
+                        Sounds.close(moneda);
                         State.changeState(new Seleccion(1,string));
 
                     }

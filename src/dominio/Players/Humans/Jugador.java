@@ -10,14 +10,20 @@ import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
 import dominio.Vector2D;
 import presentacion.Assets;
+import presentacion.Sounds;
+import presentacion.tiempo;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public abstract class Jugador {
-
+    protected int tipo;
     protected BufferedImage texture;
     protected AffineTransform at;
     public Vector2D position;
@@ -29,31 +35,49 @@ public abstract class Jugador {
     protected int score=0;
     protected ArrayList<BufferedImage> personaje;
     protected ArrayList<Lives>vidas;
+    protected Clip jump = AudioSystem.getClip();
+    protected Clip murio = AudioSystem.getClip();
+    protected Clip teletransporta=AudioSystem.getClip();
+    protected Clip llega=AudioSystem.getClip();
+    protected boolean muere=false;
+    protected boolean pierde=false;
+    protected boolean cortasalto=false;
+    protected boolean desliza=false;
+    protected boolean charco=false;
+    protected boolean anden=false;
     protected int x;
-    public Jugador(Vector2D position, BufferedImage texture, ArrayList<BufferedImage> personaje, ArrayList<Lives> vidas) {
+    public int segundos;
+    public tiempo tiempo=new tiempo();
+
+    public Jugador(Vector2D position, BufferedImage texture, ArrayList<BufferedImage> personaje, ArrayList<Lives> vidas,int tipo) throws LineUnavailableException {
+        this.tipo=tipo;
         this.vidas=vidas;
         this.position = position;
         this.texture = texture;
         this.personaje = personaje;
     }
-    public boolean interacciones(ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles, ArrayList<Charco> charcos){
+    public boolean interacciones(ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles, ArrayList<Charco> charcos,InputStream pierde, Clip murio){
+        boolean muere=false;
         if (position.getY() < 635 && position.getY() > 410) {
-            return cars(cars);
+            muere=cars(cars);
         }
         else if ((position.getY() >= 275 && position.getY() <= 305) || (position.getY() >= 230 && position.getY() <= 260) ||
                 (position.getY() >= 140 && position.getY() <= 170) || (position.getY() + texture.getWidth() >= 275 && position.getY() + texture.getWidth() <= 305) ||
                 (position.getY() + texture.getWidth() >= 230 && position.getY() + texture.getWidth() <= 260) ||
                 (position.getY() + texture.getWidth() >= 140 && position.getY() + texture.getWidth() <= 170)
         ) {
-            return trunks(trunks);
+            muere=trunks(trunks);
         }
         else if ((position.getY() >= 320 && position.getY() <= 350) || (position.getY() >= 185 && position.getY() <= 215) ||
                 (position.getY() + texture.getWidth() >= 320 && position.getY() + texture.getWidth() <= 350) ||
                 (position.getY() + texture.getWidth() >= 185 && position.getY() + texture.getWidth() <= 215)) {
-            return turtles(turtles);
+            muere=turtles(turtles);
         }
-        charcos(charcos);
-        return false;
+        if(muere){
+            Sounds.reproduce(murio,pierde,false);
+            tiempo.Detener();
+        }
+        return muere;
     }
     public boolean cars(ArrayList<Car> cars){
         for (int i = 0; i < cars.size(); i++) {
@@ -144,7 +168,7 @@ public abstract class Jugador {
         texture = personaje.get(0);
         return true;
     }
-    public void charcos(ArrayList<Charco> charcos){
+    public boolean charcos(ArrayList<Charco> charcos){
         for (int i = 0; i < charcos.size(); i++) {
             double xcharco = charcos.get(i).position.getX();
             double ycharco = charcos.get(i).position.getY();
@@ -160,16 +184,23 @@ public abstract class Jugador {
                     (position.getY()+texture.getHeight()>=ycharco && position.getY()+texture.getHeight()<=hcharco && ((position.getX()>=xcharco && position.getX()<=wcharco)||
                             (position.getX()+texture.getWidth()>=xcharco && position.getX()+texture.getWidth()<=wcharco)))
             ){
-                position.setX(x);
-                position.setY(365);
                 movido=0;
                 texture = personaje.get(0);
+
+                return true;
             }
         }
+        return false;
     }
-    public void up(){
+    public void up(Clip jump, InputStream salto){
+
         presiono="a";
-        if(movido>0 && movido<=10){
+        if(movido==0){
+            if(presiono=="a"){
+                Sounds.reproduce(jump,salto,false);
+            }
+        }
+        else if(movido>0 && movido<=10){
             texture = personaje.get(0);
         }
         else if(movido>10 && movido<=20){
@@ -178,7 +209,10 @@ public abstract class Jugador {
         else if(movido>20 && movido<38){
             texture = personaje.get(2);
         }
-        else if(movido>=38){
+        else if(movido==38){
+            if (presiono=="a"){
+                Sounds.close(jump);
+            }
             texture = personaje.get(0);
             movido=-2;
             if(presiono=="a"){
@@ -188,7 +222,7 @@ public abstract class Jugador {
         movido+=2;
         position.setY(position.getY() - 2.25);
     }
-    public void fin(ArrayList<Ganar> win){
+    public void fin(ArrayList<Ganar> win,Clip llega, InputStream meta){
         presiono="b";
         if(position.getX()>30 && position.getX()<100){
             win.get(0).update(personaje.get(12));
@@ -211,15 +245,21 @@ public abstract class Jugador {
         else if(position.getX()>855 && position.getX()<885){
             win.get(6).update(personaje.get(12));
         }
+        if(!llega.isRunning()){
+            Sounds.reproduce(llega,meta,false);
+        }
         llego+=1;
         movido=0;
         score+=50;
         position.setX(x);
         position.setY(635+42.75);
     }
-    public void  down(){
+    public void  down(Clip jump, InputStream salto){
         presiono="c";
-        if(movido>0 && movido<=10){
+        if(movido==0){
+            Sounds.reproduce(jump,salto,false);
+        }
+        else if(movido>0 && movido<=10){
             texture = personaje.get(3);
         }
         else if(movido>10 && movido<=20){
@@ -228,7 +268,8 @@ public abstract class Jugador {
         else if(movido>20 && movido<38){
             texture = personaje.get(5);
         }
-        else if(movido>=38){
+        else if(movido==38){
+            Sounds.close(jump);
             texture = personaje.get(3);
             movido=-2;
             score-=10;
@@ -236,9 +277,12 @@ public abstract class Jugador {
         movido+=2;
         position.setY(position.getY() + 2.25);
     }
-    public void left(){
+    public void left(Clip jump, InputStream salto){
         presiono="d";
-        if(movido>0 && movido<=10){
+        if(movido==0){
+            Sounds.reproduce(jump,salto,false);
+        }
+        else if(movido>0 && movido<=10){
             texture = personaje.get(6);
         }
         else if(movido>10 && movido<=20){
@@ -247,16 +291,20 @@ public abstract class Jugador {
         else if(movido>20 && movido<38){
             texture = personaje.get(8);
         }
-        else if(movido>=38){
+        else if(movido==38){
+            Sounds.close(jump);
             texture = personaje.get(6);
             movido=-2;
         }
         movido+=2;
         position.setX(position.getX() - 2.25);
     }
-    public void right(){
+    public void right(Clip jump, InputStream salto){
         presiono="e";
-        if(movido>0 && movido<=10){
+        if(movido==0){
+            Sounds.reproduce(jump,salto,false);
+        }
+        else if(movido>0 && movido<=10){
             texture = personaje.get(9);
         }
         else if(movido>10 && movido<=20){
@@ -265,7 +313,8 @@ public abstract class Jugador {
         else if(movido>20 && movido<38){
             texture = personaje.get(11);
         }
-        else if(movido>=38){
+        else if(movido==38){
+            Sounds.close(jump);
             texture = personaje.get(9);
             movido=-2;
         }
@@ -294,6 +343,41 @@ public abstract class Jugador {
             lives++;
             vidas.get(i).update(personaje.get(14));
         }
+    }
+    public void finsonido(Clip murio, Clip teletransporta){
+        if(murio.getMicrosecondPosition()==murio.getMicrosecondLength() && murio.getMicrosecondLength()!=0){
+            tiempo.Contar(-1);
+            Sounds.close(murio);
+            pierde=false;
+        }
+        if(teletransporta.getMicrosecondLength()==teletransporta.getMicrosecondPosition() && teletransporta.getMicrosecondLength()!=0){
+            Sounds.close(teletransporta);
+        }
+        if(llega.getMicrosecondLength()==llega.getMicrosecondPosition() && llega.getMicrosecondLength()!=0){
+            Sounds.close(llega);
+        }
+    }
+    public boolean miratiempo(int x){
+        if(tiempo.getSegundos()==30){
+            tiempo.Detener();
+            tiempo.reinicia();
+            lives--;
+            vidas.get(lives).update(Assets.blanco);
+            position.setX(x);
+            position.setY(635);
+            texture=personaje.get(0);
+            return true;
+        }
+        return false;
+    }
+    public void acera(int x){
+        tiempo.Detener();
+        tiempo.reinicia();
+        lives--;
+        vidas.get(lives).update(Assets.blanco);
+        position.setX(x);
+        position.setY(635);
+        texture = personaje.get(0);
     }
     public abstract int getLives();
     public abstract int getScore();

@@ -26,8 +26,7 @@ public class GameOver extends State {
         else {
             back=Sounds.lose;
         }
-        reproduce(back);
-        Sounds.init();
+        Sounds.reproduce(backsound,back,false);
         this.text=text;
         this.score=score;
         this.string = string;
@@ -41,6 +40,7 @@ public class GameOver extends State {
                 new Action() {
                     @Override
                     public void doAction() throws LineUnavailableException {
+                        Sounds.close(backsound);
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
                         State.changeState(new MenuState(string));
@@ -59,6 +59,7 @@ public class GameOver extends State {
                     public void doAction() throws LineUnavailableException {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
+                        Sounds.close(backsound);
                         if(tipo==1){
                             State.changeState(new GameState(tipo,personaje1,background,string));
                         }
@@ -70,17 +71,11 @@ public class GameOver extends State {
 
         ));
     }
-    public void reproduce(InputStream back){
-        try {
-            backsound.open(AudioSystem.getAudioInputStream(back));
-            backsound.start();
-
-        } catch (Exception fallo) {
-            System.out.println(fallo);
-        }
-    }
     @Override
     public void update() throws LineUnavailableException {
+        if(backsound.getMicrosecondLength()==backsound.getMicrosecondPosition()){
+            Sounds.close(backsound);
+        }
         for(Button b: buttons) {
             b.update();
         }

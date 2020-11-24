@@ -29,11 +29,7 @@ public class mapa extends State{
                 new Action() {
                     @Override
                     public void doAction() throws LineUnavailableException {
-                        try {
-                            elegir.stop();
-                        } catch (Exception fallo) {
-                            System.out.println(fallo);
-                        }
+                        Sounds.close(elegir);
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
                         if (tipo==1){
@@ -58,11 +54,7 @@ public class mapa extends State{
                     public void doAction() throws LineUnavailableException {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
-                        try {
-                            elegir.stop();
-                        } catch (Exception fallo) {
-                            System.out.println(fallo);
-                        }
+                        Sounds.close(elegir);
                         if (tipo==1){
                             State.changeState(new GameState(tipo,personaje1,Assets.backgroundnoche,string));
                         }

@@ -10,10 +10,7 @@ import dominio.Players.Generales.Lives;
 import dominio.Players.Humans.Player;
 import dominio.Players.Humans.Player2;
 import dominio.Vector2D;
-import presentacion.Assets;
-import presentacion.KeyBoard;
-import presentacion.Message;
-import presentacion.State;
+import presentacion.*;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
@@ -56,8 +53,8 @@ public class GameStateVSplayer extends States {
         turtlesD();
         ganar();
         lives();
-        player1 = new Player(new Vector2D(300, 635), personaje1.get(0), personaje1,livesp1);
-        player2 = new Player2(new Vector2D(600, 635), personaje2.get(0), personaje2,livesp2);
+        player1 = new Player(new Vector2D(300, 635), personaje1.get(0), personaje1,livesp1,tipo);
+        player2 = new Player2(new Vector2D(600, 635), personaje2.get(0), personaje2,livesp2,tipo);
     }
 
     public void carsA(){
@@ -174,6 +171,54 @@ public class GameStateVSplayer extends States {
         Lives live10p2 = new Lives(new Vector2D(895,680),personaje2.get(14));
         livesp2.add(live10p2);
     }
+    public void verifica() throws LineUnavailableException {
+        if (((player1.getLives() > 0 || player2.getLives() > 0) && pausa == false) && !sube) {
+            super.update();
+            if (player1.getLives() > 0) {
+                player1.update(winp1, cars, trunks, turtles, charcos);
+            }
+            if (player2.getLives() > 0) {
+                player2.update(winp2, cars, trunks, turtles, charcos);
+            }
+        } else if (player1.getLives() == 0 && player2.getLives() == 0) {
+            Sounds.close(backsound);
+            if (player1.getScore() > player2.getScore()) {
+                State.changeState(new GameOver(tipo, "Game over player 1 win", player1.getScore(), string, personaje1, personaje2, background,"l"));
+            } else if (player1.getScore() < player2.getScore()) {
+                State.changeState(new GameOver(tipo, "Game over player 2 win", player2.getScore(), string, personaje1, personaje2, background,"l"));
+            } else {
+                State.changeState(new GameOver(tipo, "Game over draw", player1.getScore(), string, personaje1, personaje2, background,"l"));
+            }
+        }
+    }
+    public void cambia(){
+        player1.position.setY(635);
+        player2.position.setY(635);
+        player1.reiniciar(winp1);
+        player2.reiniciar(winp2);
+        cambia = false;
+        if(level>1) {
+            player1.cargavidas();
+            player2.cargavidas();
+        }
+    }
+    public void llega(){
+        player1.llego=0;
+        player2.llego=0;
+        Sounds.close(backsound);
+        detiene=true;
+        sube = true;
+    }
+    public void gana() throws LineUnavailableException {
+        if (player1.getScore() > player2.getScore()) {
+            Sounds.close(backsound);
+            State.changeState(new GameOver(tipo, "Player 1 game´s winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
+        } else if (player1.getScore() < player2.getScore()) {
+            State.changeState(new GameOver(tipo, "Player 2 game´s winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
+        } else {
+            State.changeState(new GameOver(tipo, "Draw", player1.getScore(), string, personaje1, personaje2, background,"w"));
+        }
+    }
 
     @Override
     public void sounds() {
@@ -182,7 +227,6 @@ public class GameStateVSplayer extends States {
 
     @Override
     public void update() throws LineUnavailableException {
-
         if(KeyBoard.pause && !pausa) {
             pausa = true;
         }
@@ -190,56 +234,15 @@ public class GameStateVSplayer extends States {
             pausa = false;
         }
         if(pausa==false) {
-            if (((player1.getLives() > 0 || player2.getLives() > 0) && pausa == false) && !sube) {
-                super.update();
-                if (player1.getLives() > 0) {
-                    player1.update(winp1, cars, trunks, turtles, charcos);
-                }
-                if (player2.getLives() > 0) {
-                    player2.update(winp2, cars, trunks, turtles, charcos);
-                }
-            } else if (player1.getLives() == 0 && player2.getLives() == 0) {
-                backsound.close();
-                if (player1.getScore() > player2.getScore()) {
-                    State.changeState(new GameOver(tipo, "Game over player 1 win", player1.getScore(), string, personaje1, personaje2, background,"l"));
-                } else if (player1.getScore() < player2.getScore()) {
-                    State.changeState(new GameOver(tipo, "Game over player 2 win", player2.getScore(), string, personaje1, personaje2, background,"l"));
-                } else {
-                    State.changeState(new GameOver(tipo, "Game over draw", player1.getScore(), string, personaje1, personaje2, background,"l"));
-                }
-            }
+            verifica();
             if (cambia) {
-                player1.position.setY(635);
-                player2.position.setY(635);
-                player1.reiniciar(winp1);
-                player2.reiniciar(winp2);
-                player1.llego = 0;
-                player2.llego = 0;
-                cambia = false;
-                sounds();
-                if(level>1) {
-                    player1.cargavidas();
-                    player2.cargavidas();
-                }
+                cambia();
             }
-            if (player1.llego == 1) {
-                player1.llego=0;
-                player2.llego=0;
-                System.out.print("entra");
-                System.out.println("\n");
-                backsound.close();
-                detiene=true;
-                sube = true;
+            if (player1.llego == 2 || player2.llego==2) {
+                llega();
             }
             if (sube && level == 6) {
-                if (player1.getScore() > player2.getScore()) {
-                    backsound.close();
-                    State.changeState(new GameOver(tipo, "Player 1 game´s winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
-                } else if (player1.getScore() < player2.getScore()) {
-                    State.changeState(new GameOver(tipo, "Player 2 game´s winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
-                } else {
-                    State.changeState(new GameOver(tipo, "Draw", player1.getScore(), string, personaje1, personaje2, background,"w"));
-                }
+                gana();
             }
         }
 

@@ -93,6 +93,7 @@ public class GUI extends JFrame implements Runnable {
 
     //metodo que inicializa cada uno de los elementos que conforman el tablero y actualiza el estado
     private void init() throws LineUnavailableException {
+        Sounds.init();
         Assets.init();
         State.changeState(new MenuState(" "));
     }

@@ -22,14 +22,7 @@ public class Seleccion extends  State{
     FileInputStream entrada;
     private Clip elegir = AudioSystem.getClip();
     public Seleccion(int tipo, String string) throws LineUnavailableException {
-        try {
-            elegir.open(AudioSystem.getAudioInputStream(Sounds.selec));
-
-            elegir.start();
-
-        } catch (Exception fallo) {
-            System.out.println(fallo);
-        }
+        Sounds.reproduce(elegir,Sounds.selec,true);
         //Texturas verde
         verde.add(Assets.player1up3);
         verde.add(Assets.player1up2);

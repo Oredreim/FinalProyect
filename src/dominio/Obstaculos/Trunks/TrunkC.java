@@ -14,7 +14,7 @@ public class TrunkC extends Trunk{
     }
     @Override
     public void update() {
-        position.setX(position.getX()+2.5);
+        position.setX(position.getX()+speed);
 
         if(position.getX()> GUI.width){
             position.setX(0-texture.getWidth());

@@ -204,7 +204,7 @@ public abstract class States extends State {
         else if(level==5){
             back=Sounds.backsound5;
         }
-        reproduce(back,true);
+        Sounds.reproduce(backsound,back,true);
     }
     public void dicenivel(){
         if (level==1){
@@ -223,25 +223,15 @@ public abstract class States extends State {
             back=Sounds.roundfive;
 
         }
-        reproduce(back,false);
+        Sounds.reproduce(backsound,back,false);
 
     }
-    public void reproduce(InputStream back, boolean loop){
-        try {
-            backsound.open(AudioSystem.getAudioInputStream(back));
-            backsound.start();
-            if(loop){
-                backsound.loop(Clip.LOOP_CONTINUOUSLY);
-            }
 
-        } catch (Exception fallo) {
-            System.out.println(fallo);
-        }
-    }
     public void update() throws LineUnavailableException {
 
         if(KeyBoard.exit){
             State.changeState(new MenuState(string));
+            Sounds.close(backsound);
         }
 
         for (int i = 0; i < cars.size(); i++) {
@@ -286,7 +276,7 @@ public abstract class States extends State {
             System.out.println("\n");*/
             if (backsound.getMicrosecondLength() == backsound.getMicrosecondPosition()) {
 
-                backsound.close();
+                Sounds.close(backsound);
                 levelup();
                 sounds();
                 sube = false;

@@ -9,10 +9,7 @@ import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
 import dominio.Players.Humans.Player;
 import dominio.Vector2D;
-import presentacion.Assets;
-import presentacion.KeyBoard;
-import presentacion.Message;
-import presentacion.State;
+import presentacion.*;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
@@ -51,7 +48,7 @@ public class GameState extends States {
         charcos();
         ganar();
         lives();
-        player1 = new Player(new Vector2D(300, 635), personaje.get(0),personaje1,lives);
+        player1 = new Player(new Vector2D(300, 635), personaje.get(0),personaje1,lives,tipo);
     }
 
     public GameState() throws LineUnavailableException {
@@ -134,7 +131,35 @@ public class GameState extends States {
         Lives live10p1 = new Lives(new Vector2D(135,680),personaje1.get(14));
         lives.add(live10p1);
     }
+    public void verifica() throws LineUnavailableException {
+        if (player1.getLives() > 0 && pausa == false && !sube) {
+            super.update();
+            player1.update(win, cars, trunks, turtles, charcos);
+        } else if (player1.getLives() == 0) {
+            Sounds.close(backsound);
+            State.changeState(new GameOver(tipo, "Game over", player1.getScore(), string, personaje1, personaje2, background,"l"));
+        }
+    }
+    public void cambia(){
+        player1.tiempo.Contar(0);
+        player1.reiniciar(win);
+        player1.position.setY(635);
+        cambia = false;
+        if(level>1){
+            player1.cargavidas();
+        }
+    }
+    public void llega(){
+        player1.llego=0;
+        Sounds.close(backsound);
+        detiene=true;
+        sube = true;
 
+    }
+    public void gana() throws LineUnavailableException {
+        Sounds.close(backsound);
+        State.changeState(new GameOver(tipo, "Yow winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
+    }
     @Override
     public void sounds() {
         super.sounds();
@@ -149,34 +174,15 @@ public class GameState extends States {
             pausa = false;
         }
         if(pausa==false) {
-            if (player1.getLives() > 0 && pausa == false && !sube) {
-                super.update();
-                player1.update(win, cars, trunks, turtles, charcos);
-            } else if (player1.getLives() == 0) {
-                backsound.close();
-                State.changeState(new GameOver(tipo, "Game over", player1.getScore(), string, personaje1, personaje2, background,"l"));
-            }
+            verifica();
             if (cambia) {
-                player1.reiniciar(win);
-                player1.position.setY(635);
-                cambia = false;
-                if(level>1){
-                    player1.cargavidas();
-
-                }
+                cambia();
             }
-            if (player1.llego == 1) {
-                player1.llego=0;
-                System.out.print("entra");
-                System.out.println("\n");
-                backsound.close();
-                detiene=true;
-                sube = true;
+            if (player1.llego == 2) {
+                llega();
             }
-
             if (sube && level == 6) {
-                backsound.close();
-                State.changeState(new GameOver(tipo, "Yow winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
+                gana();
             }
         }
     }
