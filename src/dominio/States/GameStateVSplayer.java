@@ -192,6 +192,8 @@ public class GameStateVSplayer extends States {
         }
     }
     public void cambia(){
+        player1.tiempo.Contar(0);
+        player2.tiempo.Contar(0);
         player1.position.setY(635);
         player2.position.setY(635);
         player1.reiniciar(winp1);
@@ -203,6 +205,8 @@ public class GameStateVSplayer extends States {
         }
     }
     public void llega(){
+        player1.tiempo.Detener();
+        player2.tiempo.Detener();
         player1.llego=0;
         player2.llego=0;
         Sounds.close(backsound);
@@ -210,8 +214,9 @@ public class GameStateVSplayer extends States {
         sube = true;
     }
     public void gana() throws LineUnavailableException {
+        Sounds.close(backsound);
         if (player1.getScore() > player2.getScore()) {
-            Sounds.close(backsound);
+
             State.changeState(new GameOver(tipo, "Player 1 game´s winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
         } else if (player1.getScore() < player2.getScore()) {
             State.changeState(new GameOver(tipo, "Player 2 game´s winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
@@ -229,9 +234,15 @@ public class GameStateVSplayer extends States {
     public void update() throws LineUnavailableException {
         if(KeyBoard.pause && !pausa) {
             pausa = true;
+            player1.tiempo.Detener();
+            player2.tiempo.Detener();
+            timep1=player1.tiempo.getSegundos();
+            timep2=player2.tiempo.getSegundos();
         }
         else if(KeyBoard.pause && pausa) {
             pausa = false;
+            player1.tiempo.Contar(timep1);
+            player2.tiempo.Contar(timep2);
         }
         if(pausa==false) {
             verifica();

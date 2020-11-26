@@ -9,7 +9,6 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class GameOver extends State {
@@ -18,15 +17,14 @@ public class GameOver extends State {
     private String text;
     private int score;
     protected Clip backsound = AudioSystem.getClip();
-    private InputStream back;
     public GameOver(int tipo, String text, int score, String string, ArrayList<BufferedImage>personaje1, ArrayList<BufferedImage>personaje2, BufferedImage background,String res) throws LineUnavailableException {
         if(res=="w"){
-            back=Sounds.win;
+            Sounds.reproduce(backsound,Sounds.win,false);
         }
         else {
-            back=Sounds.lose;
+            Sounds.reproduce(backsound,Sounds.lose,false);
         }
-        Sounds.reproduce(backsound,back,false);
+        Sounds.init();
         this.text=text;
         this.score=score;
         this.string = string;

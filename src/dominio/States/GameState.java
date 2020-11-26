@@ -150,6 +150,7 @@ public class GameState extends States {
         }
     }
     public void llega(){
+        player1.tiempo.Detener();
         player1.llego=0;
         Sounds.close(backsound);
         detiene=true;
@@ -169,9 +170,12 @@ public class GameState extends States {
     public void update() throws LineUnavailableException {
         if(KeyBoard.pause && !pausa) {
             pausa = true;
+            player1.tiempo.Detener();
+            timep1=player1.tiempo.getSegundos();
         }
         else if(KeyBoard.pause && pausa) {
             pausa = false;
+            player1.tiempo.Contar(timep1);
         }
         if(pausa==false) {
             verifica();

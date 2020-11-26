@@ -1,4 +1,5 @@
 package presentacion;
+
 import dominio.States.Seleccion;
 
 import javax.sound.sampled.AudioSystem;
@@ -15,9 +16,9 @@ public class MenuState extends State{
     private String string;
     File archivo;
     FileInputStream entrada;
-    private Clip moneda = AudioSystem.getClip();
-
+    protected Clip moneda= AudioSystem.getClip();;
     public MenuState(String string) throws LineUnavailableException {
+        Sounds.init();
         Sounds.reproduce(moneda,Sounds.inicia,false);
 
         this.string = string;
@@ -55,7 +56,7 @@ public class MenuState extends State{
                     public void doAction() throws LineUnavailableException {
                     	//GameState.getPlayer().setName(nombre1);
                     	//GameState.getPlayer2().setName(nombre2);
-                        moneda.stop();
+                        Sounds.close(moneda);
                         State.changeState(new Seleccion(2,string));
                     }
                 }

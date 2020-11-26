@@ -47,7 +47,7 @@ public abstract class Jugador {
     protected boolean anden=false;
     protected int x;
     public int segundos;
-    public tiempo tiempo=new tiempo();
+
 
     public Jugador(Vector2D position, BufferedImage texture, ArrayList<BufferedImage> personaje, ArrayList<Lives> vidas,int tipo) throws LineUnavailableException {
         this.tipo=tipo;
@@ -56,7 +56,7 @@ public abstract class Jugador {
         this.texture = texture;
         this.personaje = personaje;
     }
-    public boolean interacciones(ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles, ArrayList<Charco> charcos,InputStream pierde, Clip murio){
+    public boolean interacciones(ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles ,InputStream pierde, Clip murio){
         boolean muere=false;
         if (position.getY() < 635 && position.getY() > 410) {
             muere=cars(cars);
@@ -74,8 +74,7 @@ public abstract class Jugador {
             muere=turtles(turtles);
         }
         if(muere){
-            Sounds.reproduce(murio,pierde,false);
-            tiempo.Detener();
+            Sounds.reproduce(murio, pierde,false);
         }
         return muere;
     }
@@ -222,7 +221,7 @@ public abstract class Jugador {
         movido+=2;
         position.setY(position.getY() - 2.25);
     }
-    public void fin(ArrayList<Ganar> win,Clip llega, InputStream meta){
+    public void fin(ArrayList<Ganar> win,Clip llega, InputStream marca){
         presiono="b";
         if(position.getX()>30 && position.getX()<100){
             win.get(0).update(personaje.get(12));
@@ -246,7 +245,7 @@ public abstract class Jugador {
             win.get(6).update(personaje.get(12));
         }
         if(!llega.isRunning()){
-            Sounds.reproduce(llega,meta,false);
+            Sounds.reproduce(llega, marca,false);
         }
         llego+=1;
         movido=0;
@@ -277,7 +276,7 @@ public abstract class Jugador {
         movido+=2;
         position.setY(position.getY() + 2.25);
     }
-    public void left(Clip jump, InputStream salto){
+    public void left(Clip jump,InputStream salto){
         presiono="d";
         if(movido==0){
             Sounds.reproduce(jump,salto,false);
@@ -299,7 +298,7 @@ public abstract class Jugador {
         movido+=2;
         position.setX(position.getX() - 2.25);
     }
-    public void right(Clip jump, InputStream salto){
+    public void right(Clip jump,InputStream salto){
         presiono="e";
         if(movido==0){
             Sounds.reproduce(jump,salto,false);
@@ -344,23 +343,22 @@ public abstract class Jugador {
             vidas.get(i).update(personaje.get(14));
         }
     }
-    public void finsonido(Clip murio, Clip teletransporta){
+    public void finsonido(Clip murio, Clip teletransporta, tiempo tiempo, Clip llegi){
+        if(llegi.getMicrosecondPosition()==llegi.getMicrosecondLength() && llegi.getMicrosecondLength()!=0){
+            Sounds.close(llegi);
+        }
         if(murio.getMicrosecondPosition()==murio.getMicrosecondLength() && murio.getMicrosecondLength()!=0){
-            tiempo.Contar(-1);
+            tiempo.Contar(0);
             Sounds.close(murio);
             pierde=false;
         }
         if(teletransporta.getMicrosecondLength()==teletransporta.getMicrosecondPosition() && teletransporta.getMicrosecondLength()!=0){
             Sounds.close(teletransporta);
         }
-        if(llega.getMicrosecondLength()==llega.getMicrosecondPosition() && llega.getMicrosecondLength()!=0){
-            Sounds.close(llega);
-        }
     }
-    public boolean miratiempo(int x){
-        if(tiempo.getSegundos()==30){
-            tiempo.Detener();
-            tiempo.reinicia();
+    public boolean miratiempo(int x,int tiempo){
+        if(tiempo==30){
+
             lives--;
             vidas.get(lives).update(Assets.blanco);
             position.setX(x);
@@ -371,8 +369,6 @@ public abstract class Jugador {
         return false;
     }
     public void acera(int x){
-        tiempo.Detener();
-        tiempo.reinicia();
         lives--;
         vidas.get(lives).update(Assets.blanco);
         position.setX(x);

@@ -7,10 +7,7 @@ import dominio.Obstaculos.Turtles.Turtle;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
 import dominio.Vector2D;
-import presentacion.Assets;
-import presentacion.KeyBoard;
-import presentacion.Sounds;
-import presentacion.Text;
+import presentacion.*;
 
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
@@ -21,7 +18,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class Player2 extends Jugador {
-
+    public tiempo tiempo=new tiempo();
 
     public Player2(Vector2D position, BufferedImage texture, ArrayList<BufferedImage> personaje,ArrayList<Lives> vidas,int tipo) throws LineUnavailableException {
         super(position, texture, personaje,vidas,tipo);
@@ -29,7 +26,7 @@ public class Player2 extends Jugador {
     }
     public void desliza(){
         if(!charco){
-            Sounds.reproduce(teletransporta,Sounds.teletransporta,false);
+            Sounds.reproduce(teletransporta, Sounds.teletransportap2,false);
             charco=true;
         }
         if(position.getX()<900) {
@@ -44,11 +41,11 @@ public class Player2 extends Jugador {
         }
     }
     @Override
-    public void finsonido(Clip murio, Clip teletransporta){
-        super.finsonido(murio,teletransporta);
+    public void finsonido(Clip murio, Clip teletransporta, tiempo tiempo, Clip llego){
+        super.finsonido(murio,teletransporta,tiempo,llego);
     }
-    public void verificar(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos){
-        muere = interacciones(cars, trunks, turtles, charcos, Sounds.pierdep1, murio);
+    public void verificar(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles){
+        muere = interacciones(cars, trunks, turtles, Sounds.pierdep2, murio);
         if (llego == 7) {
             score += 1000;
             reiniciar(win);
@@ -70,7 +67,7 @@ public class Player2 extends Jugador {
                 (position.getX()>450 && position.getX()<480)||(position.getX()>580 && position.getX()<625)||
                 (position.getX()>725 && position.getX()<755)||(position.getX()>855 && position.getX()<885))&&
                 movido==0)||(movido!=0 && presiono=="b")){
-            fin(win,jump,Sounds.llegap2);
+            fin(win,llega,Sounds.llegap2);
         }
 
         else if((KeyBoard.down2 && position.getY()<=600 && movido==0)||(movido!=0 && presiono=="c")){
@@ -87,6 +84,24 @@ public class Player2 extends Jugador {
     }
     @Override
     public void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos ){
+        if(super.miratiempo(600,tiempo.getSegundos())){
+            Sounds.reproduce(murio,Sounds.pierdep2,false);
+            tiempo.Detener();
+            tiempo.reinicia();
+        }
+        if ((position.getY() == 635 || position.getY() == 365) && !anden) {
+            segundos=30-tiempo.getSegundos()-5;
+            anden=true;
+        }
+        if(anden && position.getY()!=635 && position.getY()!=365){
+            anden=false;
+        }
+        if(anden && 30-tiempo.getSegundos()==segundos){
+            super.acera(600);
+            tiempo.Detener();
+            tiempo.reinicia();
+            Sounds.reproduce(murio,Sounds.pierdep2,false);
+        }
         if(!charco){
             desliza=charcos(charcos);
         }
@@ -94,7 +109,7 @@ public class Player2 extends Jugador {
             desliza();
         }
         if(!pierde && !desliza){
-            verificar(win, cars, trunks, turtles, charcos);
+            verificar(win, cars, trunks, turtles);
 
         }
         if(!muere && !desliza) {
@@ -104,10 +119,10 @@ public class Player2 extends Jugador {
             }
             movimiento(win);
         }
-        finsonido(murio,teletransporta);
+        finsonido(murio,teletransporta,tiempo,llega);
     }
-    public boolean interacciones(ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos,InputStream pierde, Clip murio){
-        return super.interacciones(cars, trunks, turtles,charcos,pierde,murio);
+    public boolean interacciones(ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,InputStream pierde, Clip murio){
+        return super.interacciones(cars, trunks, turtles,pierde,murio);
     }
     @Override
     public int getScore() {
@@ -128,6 +143,7 @@ public class Player2 extends Jugador {
         if(score<0){
             score=0;
         }
+        Text.drawText(g,"Time: "+Integer.toString(30-tiempo.getSegundos()),new Vector2D(900,70),true, Color.WHITE,Assets.fontMed);
         Text.drawText(g,"Score"+Integer.toString(score),new Vector2D(800,35),true, Color.WHITE,Assets.fontMed);
         Text.drawText(g,"X"+Integer.toString(lives),new Vector2D(930,702),true, Color.WHITE,Assets.fontMed);
         Graphics2D g2d = (Graphics2D)g;
@@ -136,24 +152,24 @@ public class Player2 extends Jugador {
         g2d.drawImage(texture, (int)position.getX(), (int)position.getY(), null);
     }
     @Override
-    public void up(Clip jump, InputStream salto){
-        super.up(jump,salto);
+    public void up(Clip jump, InputStream sonido){
+        super.up(jump,sonido);
     }
     @Override
-    public void fin(ArrayList<Ganar> win,Clip jump, InputStream salto){
-        super.fin(win,jump,salto);
+    public void fin(ArrayList<Ganar> win,Clip jump, InputStream sonido){
+        super.fin(win,jump,sonido);
     }
     @Override
-    public void  down(Clip jump, InputStream salto){
-        super.down(jump,salto);
+    public void  down(Clip jump, InputStream sonido){
+        super.down(jump,sonido);
     }
     @Override
-    public void left(Clip jump, InputStream salto){
-        super.left(jump,salto);
+    public void left(Clip jump, InputStream sonido){
+        super.left(jump,sonido);
     }
     @Override
-    public void right(Clip jump, InputStream salto){
-        super.right(jump,salto);
+    public void right(Clip jump, InputStream sonido){
+        super.right(jump,sonido);
     }
     @Override
     public void reiniciar(ArrayList<Ganar> win) {

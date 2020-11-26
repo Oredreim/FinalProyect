@@ -37,8 +37,8 @@ public abstract class States extends State {
     protected boolean detiene = false;
     protected boolean cambia=false;
     protected Clip backsound = AudioSystem.getClip();
-    private InputStream back;
-
+    protected InputStream back;
+    protected int timep1,timep2;
 
     public States() throws LineUnavailableException {};
 

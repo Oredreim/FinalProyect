@@ -23,7 +23,8 @@ public class Sounds {
     public static InputStream jumpp2;
     public static InputStream pierdep1;
     public static InputStream pierdep2;
-    public static InputStream teletransporta;
+    public static InputStream teletransportap1;
+    public static InputStream teletransportap2;
     public static InputStream llegap1;
     public static InputStream llegap2;
     public static void init() {
@@ -47,7 +48,8 @@ public class Sounds {
         jumpp2 = Assets.class.getResourceAsStream("/res/jump1.wav");
         pierdep1= Assets.class.getResourceAsStream("/res/pierdevida.wav");
         pierdep2= Assets.class.getResourceAsStream("/res/pierdevida1.wav");
-        teletransporta=Assets.class.getResourceAsStream("/res/teletransporta.wav");
+        teletransportap1=Assets.class.getResourceAsStream("/res/teletransporta.wav");
+        teletransportap2=Assets.class.getResourceAsStream("/res/teletransporta1.wav");
         llegap1= Assets.class.getResourceAsStream("/res/llega.wav");
         llegap2= Assets.class.getResourceAsStream("/res/llega1.wav");
     }
@@ -106,8 +108,11 @@ public class Sounds {
         if(back.equals(pierdep2)){
             pierdep2= Assets.class.getResourceAsStream("/res/pierdevida1.wav");
         }
-        if(back.equals(teletransporta)){
-            teletransporta=Assets.class.getResourceAsStream("/res/teletransporta.wav");
+        if(back.equals(teletransportap1)){
+            teletransportap1=Assets.class.getResourceAsStream("/res/teletransporta.wav");
+        }
+        if(back.equals(teletransportap2)){
+            teletransportap2=Assets.class.getResourceAsStream("/res/teletransporta.wav");
         }
         if(back.equals(llegap1)){
             llegap1= Assets.class.getResourceAsStream("/res/llega.wav");
@@ -116,7 +121,8 @@ public class Sounds {
             llegap2= Assets.class.getResourceAsStream("/res/llega1.wav");
         }
     }
-    public static void reproduce(Clip backsound, InputStream back, boolean loop){
+
+    public static void reproduce(Clip backsound, InputStream back,boolean loop){
         try {
             backsound.open(AudioSystem.getAudioInputStream(back));
             backsound.start();
@@ -129,6 +135,11 @@ public class Sounds {
             System.out.println(fallo);
         }
     }
+    /*public static void reinicia(Clip backsound){
+        backsound.stop();
+        backsound.setMicrosecondPosition(0);
+
+    }*/
     public static void close(Clip backsound){
         backsound.close();
     }

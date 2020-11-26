@@ -8,7 +8,7 @@ import java.util.TimerTask;
 public class tiempo {
 
     public static Timer timer;
-    public static int segundos;
+    public static int segundos=0;
 
 
     //Clase interna que funciona como contador
@@ -23,7 +23,7 @@ public class tiempo {
     {
         this.segundos=segundos;
         timer = new Timer();
-        timer.schedule(new Contador(), 0, 1000);
+        timer.schedule(new Contador(), segundos, 1000);
     }
     //Detiene el contador
     public void Detener() {

@@ -20,9 +20,9 @@ public class Seleccion extends  State{
     private String string;
     File archivo;
     FileInputStream entrada;
-    private Clip elegir = AudioSystem.getClip();
+    protected Clip elige= AudioSystem.getClip();
     public Seleccion(int tipo, String string) throws LineUnavailableException {
-        Sounds.reproduce(elegir,Sounds.selec,true);
+        Sounds.reproduce(elige,Sounds.selec,true);
         //Texturas verde
         verde.add(Assets.player1up3);
         verde.add(Assets.player1up2);
@@ -70,7 +70,7 @@ public class Seleccion extends  State{
                     public void doAction() {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
-                        State.changeState(new mapa(tipo, verde, roja,string,elegir));
+                        State.changeState(new mapa(tipo, verde, roja,string,elige));
 
                     }
                 }
@@ -87,7 +87,7 @@ public class Seleccion extends  State{
                     public void doAction() {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
-                        State.changeState(new mapa(tipo, roja, verde,string,elegir));
+                        State.changeState(new mapa(tipo, roja, verde,string,elige));
                     }
                 }
 
