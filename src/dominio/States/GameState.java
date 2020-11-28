@@ -174,6 +174,13 @@ public class GameState extends States {
             start=new Date();
             acelerador();
         }
+        if(!cascaron &&(player1.getLives()==6 || player1.getLives()==2)){
+            caparazon();
+            cascaron=true;
+        }
+        else if(cascaron && player1.getLives()!=6 && player1.getLives()!=2){
+            cascaron=false;
+        }
         if(KeyBoard.pause && !pausa) {
             pausa = true;
             player1.iniciapausa();
@@ -214,6 +221,9 @@ public class GameState extends States {
     }
     public void acelerador(){
         super.acelerador();
+    }
+    public void caparazon(){
+        super.caparazon();
     }
     public ArrayList<Message> getMessages() {
         return messages;

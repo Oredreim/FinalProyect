@@ -8,6 +8,7 @@ import dominio.Obstaculos.Trunks.TrunkB;
 import dominio.Obstaculos.Trunks.TrunkC;
 import dominio.Obstaculos.Turtles.*;
 import dominio.Sorpresas.Acelerar;
+import dominio.Sorpresas.Caparazon;
 import dominio.Sorpresas.Sorpresas;
 import dominio.Vector2D;
 import presentacion.*;
@@ -43,6 +44,7 @@ public abstract class States extends State {
     protected InputStream back;
     protected Date start=new Date();
     protected Date end=new Date();
+    protected boolean cascaron=false;
 
     public States() throws LineUnavailableException {};
 
@@ -235,6 +237,19 @@ public abstract class States extends State {
         double y = (int) (Math.random() * (591 - 410)) + 410;
         Acelerar acelerardor = new Acelerar(new Vector2D(x,y),Assets.acelera);
         sorpresas.add(acelerardor);
+    }
+    public void caparazon(){
+        int y=0;
+        double x = (int) (Math.random() * (901 - 0)) + 0;
+        int i= (int) (Math.random() * (3 - 1)) + 1;
+        if(i==1){
+            y=635;
+        }
+        else{
+            y=365;
+        }
+        Caparazon caparazon = new Caparazon(new Vector2D(x,y),Assets.caparazon);
+        sorpresas.add(caparazon);
     }
     public void update() throws LineUnavailableException {
 

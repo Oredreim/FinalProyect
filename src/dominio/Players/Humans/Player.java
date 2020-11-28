@@ -146,7 +146,7 @@ public  class Player extends Jugador {
         if(desliza){
             desliza();
         }
-        if(!pierde && !desliza){
+        if(!pierde && !desliza && !caparazon){
             verificar(win, cars, trunks, turtles);
         }
         if (!muere && !desliza) {
@@ -256,7 +256,7 @@ public  class Player extends Jugador {
         start=new Date();
     }
     public void perdio(){
-        super.perdio(position.getX());
+        super.perdio(300);
 
     }
     public void iniciapausa(){

@@ -184,7 +184,7 @@ public class Player2 extends Jugador {
         start=new Date();
     }
     public void perdio(){
-        super.perdio(position.getX());
+        super.perdio(600);
 
     }
     public void iniciapausa(){
