@@ -6,6 +6,7 @@ import dominio.Obstaculos.Trunks.Trunk;
 import dominio.Obstaculos.Turtles.Turtle;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
+import dominio.Sorpresas.Sorpresas;
 import dominio.Vector2D;
 import presentacion.*;
 
@@ -16,9 +17,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Player2 extends Jugador {
-    public tiempo tiempo=new tiempo();
 
     public Player2(Vector2D position, BufferedImage texture, ArrayList<BufferedImage> personaje,ArrayList<Lives> vidas,int tipo) throws LineUnavailableException {
         super(position, texture, personaje,vidas,tipo);
@@ -41,8 +42,8 @@ public class Player2 extends Jugador {
         }
     }
     @Override
-    public void finsonido(Clip murio, Clip teletransporta, tiempo tiempo, Clip llego){
-        super.finsonido(murio,teletransporta,tiempo,llego);
+    public void finsonido(Clip murio, Clip teletransporta, Clip llego){
+        super.finsonido(murio,teletransporta,llego);
     }
     public void verificar(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles){
         muere = interacciones(cars, trunks, turtles, Sounds.pierdep2, murio);
@@ -51,11 +52,7 @@ public class Player2 extends Jugador {
             reiniciar(win);
         }
         if (muere) {
-            cortasalto=true;
-            pierde=true;
-            score -= 100;
-            lives--;
-            vidas.get(lives).update(Assets.blanco);
+            perdio();
         }
     }
     public void movimiento(ArrayList<Ganar> win){
@@ -82,26 +79,28 @@ public class Player2 extends Jugador {
             right(jump,Sounds.jumpp2);
         }
     }
-    @Override
-    public void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos ){
-        if(super.miratiempo(600,tiempo.getSegundos())){
-            Sounds.reproduce(murio,Sounds.pierdep2,false);
-            tiempo.Detener();
-            tiempo.reinicia();
+    public void tiempo(){
+        end=new Date();
+        interval=30-(int)((end.getTime()-start.getTime())/1000)+tiempopausa;
+        if(interval==0){
+            Sounds.reproduce(murio,Sounds.pierdep1,false);
+            perdio();
+
         }
         if ((position.getY() == 635 || position.getY() == 365) && !anden) {
-            segundos=30-tiempo.getSegundos()-5;
+            segundos=interval-5;
             anden=true;
         }
         if(anden && position.getY()!=635 && position.getY()!=365){
             anden=false;
         }
-        if(anden && 30-tiempo.getSegundos()==segundos){
-            super.acera(600);
-            tiempo.Detener();
-            tiempo.reinicia();
-            Sounds.reproduce(murio,Sounds.pierdep2,false);
+        if(anden && interval==segundos){
+            Sounds.reproduce(murio,Sounds.pierdep1,false);
+            perdio();
         }
+    }
+    @Override
+    public void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles, ArrayList<Charco> charcos, ArrayList<Sorpresas>powers){
         if(!charco){
             desliza=charcos(charcos);
         }
@@ -113,16 +112,21 @@ public class Player2 extends Jugador {
 
         }
         if(!muere && !desliza) {
-            if(cortasalto){
+            tiempo();
+            if(cortasalto && jump.getMicrosecondLength()==jump.getMicrosecondPosition()){
                 Sounds.close(jump);
                 cortasalto=false;
             }
             movimiento(win);
         }
-        finsonido(murio,teletransporta,tiempo,llega);
+        finsonido(murio,teletransporta,llega);
     }
     public boolean interacciones(ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,InputStream pierde, Clip murio){
         return super.interacciones(cars, trunks, turtles,pierde,murio);
+    }
+    @Override
+    public boolean charcos(ArrayList<Charco> charcos) {
+        return super.charcos(charcos);
     }
     @Override
     public int getScore() {
@@ -143,8 +147,8 @@ public class Player2 extends Jugador {
         if(score<0){
             score=0;
         }
-        Text.drawText(g,"Time: "+Integer.toString(30-tiempo.getSegundos()),new Vector2D(900,70),true, Color.WHITE,Assets.fontMed);
-        Text.drawText(g,"Score"+Integer.toString(score),new Vector2D(800,35),true, Color.WHITE,Assets.fontMed);
+        Text.drawText(g,"Time: "+Integer.toString(interval),new Vector2D(850,70),true, Color.WHITE,Assets.fontMed);
+        Text.drawText(g,"Score"+Integer.toString(score),new Vector2D(850,35),true, Color.WHITE,Assets.fontMed);
         Text.drawText(g,"X"+Integer.toString(lives),new Vector2D(930,702),true, Color.WHITE,Assets.fontMed);
         Graphics2D g2d = (Graphics2D)g;
 
@@ -174,5 +178,19 @@ public class Player2 extends Jugador {
     @Override
     public void reiniciar(ArrayList<Ganar> win) {
         super.reiniciar(win);
+    }
+    @Override
+    public void caambiaincial() {
+        start=new Date();
+    }
+    public void perdio(){
+        super.perdio(position.getX());
+
+    }
+    public void iniciapausa(){
+        super.iniciapausa();
+    }
+    public void terminapausa(){
+        super.terminapausa();
     }
 }

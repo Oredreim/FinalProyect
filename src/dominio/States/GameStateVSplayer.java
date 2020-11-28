@@ -175,10 +175,10 @@ public class GameStateVSplayer extends States {
         if (((player1.getLives() > 0 || player2.getLives() > 0) && pausa == false) && !sube) {
             super.update();
             if (player1.getLives() > 0) {
-                player1.update(winp1, cars, trunks, turtles, charcos);
+                player1.update(winp1, cars, trunks, turtles, charcos,sorpresas);
             }
             if (player2.getLives() > 0) {
-                player2.update(winp2, cars, trunks, turtles, charcos);
+                player2.update(winp2, cars, trunks, turtles, charcos,sorpresas);
             }
         } else if (player1.getLives() == 0 && player2.getLives() == 0) {
             Sounds.close(backsound);
@@ -192,8 +192,8 @@ public class GameStateVSplayer extends States {
         }
     }
     public void cambia(){
-        player1.tiempo.Contar(0);
-        player2.tiempo.Contar(0);
+        player1.caambiaincial();
+        player2.caambiaincial();
         player1.position.setY(635);
         player2.position.setY(635);
         player1.reiniciar(winp1);
@@ -205,8 +205,6 @@ public class GameStateVSplayer extends States {
         }
     }
     public void llega(){
-        player1.tiempo.Detener();
-        player2.tiempo.Detener();
         player1.llego=0;
         player2.llego=0;
         Sounds.close(backsound);
@@ -234,15 +232,13 @@ public class GameStateVSplayer extends States {
     public void update() throws LineUnavailableException {
         if(KeyBoard.pause && !pausa) {
             pausa = true;
-            player1.tiempo.Detener();
-            player2.tiempo.Detener();
-            timep1=player1.tiempo.getSegundos();
-            timep2=player2.tiempo.getSegundos();
+            player1.iniciapausa();
+            player2.iniciapausa();
         }
         else if(KeyBoard.pause && pausa) {
             pausa = false;
-            player1.tiempo.Contar(timep1);
-            player2.tiempo.Contar(timep2);
+            player1.terminapausa();
+            player2.terminapausa();
         }
         if(pausa==false) {
             verifica();

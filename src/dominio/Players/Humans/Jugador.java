@@ -8,10 +8,12 @@ import dominio.Obstaculos.Turtles.TurtleB;
 import dominio.Obstaculos.Turtles.TurtleD;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
+import dominio.Sorpresas.Acelerar;
+import dominio.Sorpresas.Caparazon;
+import dominio.Sorpresas.Sorpresas;
 import dominio.Vector2D;
 import presentacion.Assets;
 import presentacion.Sounds;
-import presentacion.tiempo;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -21,8 +23,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
-public abstract class Jugador {
+public abstract class Jugador{
     protected int tipo;
     protected BufferedImage texture;
     protected AffineTransform at;
@@ -47,7 +50,18 @@ public abstract class Jugador {
     protected boolean anden=false;
     protected int x;
     public int segundos;
-
+    protected Date start= new Date();
+    protected Date end = new Date();
+    protected Date pausestart= new Date();
+    protected Date pauseend = new Date();
+    protected int interval;
+    protected int tiempopausa=0;
+    protected ArrayList<Sorpresas> sorpresas=new ArrayList<>();
+    protected String poderes="";
+    protected boolean acelerador=false;
+    protected boolean caparazon=false;
+    protected int tiempoPower;
+    protected double mueve;
 
     public Jugador(Vector2D position, BufferedImage texture, ArrayList<BufferedImage> personaje, ArrayList<Lives> vidas,int tipo) throws LineUnavailableException {
         this.tipo=tipo;
@@ -94,11 +108,6 @@ public abstract class Jugador {
                     (position.getY()+texture.getHeight()>=ycar && position.getY()+texture.getHeight()<=hcar && ((position.getX()>=xcar && position.getX()<=wcar)||
                             (position.getX()+texture.getWidth()>=xcar && position.getX()+texture.getWidth()<=wcar)))
             ){
-                position.setX(x);
-
-                position.setY(635);
-                movido = 0;
-                texture = personaje.get(0);
                 return true;
             }
         }
@@ -126,10 +135,6 @@ public abstract class Jugador {
                 return false;
             }
         }
-        position.setX(x);
-        position.setY(635);
-        movido=0;
-        texture = personaje.get(0);
         return true;
     }
     public boolean turtles(ArrayList<Turtle> turtles){
@@ -149,10 +154,6 @@ public abstract class Jugador {
                             (position.getX()+texture.getWidth()>=xturtle && position.getX()+texture.getWidth()<=wturtle)))
             ){
                 if((turtles.get(i) instanceof TurtleB ||turtles.get(i) instanceof TurtleD) && turtles.get(i).estado=="c"){
-                    position.setX(x);
-                    position.setY(635);
-                    movido=0;
-                    texture = personaje.get(0);
                     return true;
                 }
                 else if (movido==0) {
@@ -191,7 +192,52 @@ public abstract class Jugador {
         }
         return false;
     }
+    public void sorpresas(ArrayList<Sorpresas> sorpresas){
+        for (int i = 0; i < sorpresas.size(); i++) {
+            double xsorpresa = sorpresas.get(i).position.getX();
+            double ysorpresa = sorpresas.get(i).position.getY();
+            double wsorpresa = xsorpresa+sorpresas.get(i).texture.getWidth();
+            double hsorpresa = ysorpresa+sorpresas.get(i).texture.getHeight();
+            if((position.getX()==xsorpresa && position.getY()==ysorpresa && position.getX()+texture.getWidth()==wsorpresa && position.getY()+texture.getHeight()==hsorpresa)||
+                    (position.getX()>=xsorpresa && position.getX()<=wsorpresa && ((position.getY()>=ysorpresa && position.getY()<=hsorpresa)||
+                            (position.getY()+texture.getHeight()>=ysorpresa && position.getY()+texture.getHeight()<=hsorpresa)))||
+                    (position.getX()+texture.getWidth()>=xsorpresa && position.getX()+texture.getWidth()<=wsorpresa && ((position.getY()>=ysorpresa && position.getY()<=hsorpresa)||
+                            (position.getY()+texture.getHeight()>=ysorpresa && position.getY()+texture.getHeight()<=hsorpresa)))||
+                    (position.getY()>=ysorpresa && position.getY()<=hsorpresa && ((position.getX()>=xsorpresa && position.getX()<=wsorpresa)||
+                            (position.getX()+texture.getWidth()>=xsorpresa && position.getX()+texture.getWidth()<=wsorpresa)))||
+                    (position.getY()+texture.getHeight()>=ysorpresa && position.getY()+texture.getHeight()<=hsorpresa && ((position.getX()>=xsorpresa && position.getX()<=wsorpresa)||
+                            (position.getX()+texture.getWidth()>=xsorpresa && position.getX()+texture.getWidth()<=wsorpresa)))
+            ){
+                if((this.sorpresas.size()==0)||(this.sorpresas.size()==1 && ((this.sorpresas.get(0) instanceof Caparazon &&
+                        sorpresas.get(i) instanceof Acelerar)||(this.sorpresas.get(0) instanceof Acelerar &&
+                        sorpresas.get(i) instanceof Caparazon)))) {
+                    this.sorpresas.add(sorpresas.get(i));
+                    sorpresas.remove(i);
+                }
+            }
+        }
+    }
+    public void activaPower(){
+        if(sorpresas.get(0) instanceof Caparazon && acelerador==false){
+            caparazon=true;
+            if(interval>=3){
+                tiempoPower=interval-3;
+            }
+        }
+        else if(sorpresas.get(0) instanceof Acelerar && caparazon==false){
+            acelerador=true;
+            if(interval>=3){
+                tiempoPower=interval-3;
+            }
+        }
+    }
     public void up(Clip jump, InputStream salto){
+        if(acelerador==true){
+            mueve=4.50;
+        }
+        else{
+            mueve=2.25;
+        }
 
         presiono="a";
         if(movido==0){
@@ -219,7 +265,7 @@ public abstract class Jugador {
             }
         }
         movido+=2;
-        position.setY(position.getY() - 2.25);
+        position.setY(position.getY() - mueve);
     }
     public void fin(ArrayList<Ganar> win,Clip llega, InputStream marca){
         presiono="b";
@@ -250,10 +296,17 @@ public abstract class Jugador {
         llego+=1;
         movido=0;
         score+=50;
+        start=new Date();
         position.setX(x);
         position.setY(635+42.75);
     }
     public void  down(Clip jump, InputStream salto){
+        if(acelerador==true){
+            mueve=4.50;
+        }
+        else{
+            mueve=2.25;
+        }
         presiono="c";
         if(movido==0){
             Sounds.reproduce(jump,salto,false);
@@ -274,9 +327,15 @@ public abstract class Jugador {
             score-=10;
         }
         movido+=2;
-        position.setY(position.getY() + 2.25);
+        position.setY(position.getY() + mueve);
     }
     public void left(Clip jump,InputStream salto){
+        if(acelerador==true){
+            mueve=4.50;
+        }
+        else{
+            mueve=2.25;
+        }
         presiono="d";
         if(movido==0){
             Sounds.reproduce(jump,salto,false);
@@ -296,9 +355,15 @@ public abstract class Jugador {
             movido=-2;
         }
         movido+=2;
-        position.setX(position.getX() - 2.25);
+        position.setX(position.getX() - mueve);
     }
     public void right(Clip jump,InputStream salto){
+        if(acelerador==true){
+            mueve=4.50;
+        }
+        else{
+            mueve=2.25;
+        }
         presiono="e";
         if(movido==0){
             Sounds.reproduce(jump,salto,false);
@@ -318,7 +383,7 @@ public abstract class Jugador {
             movido=-2;
         }
         movido+=2;
-        position.setX(position.getX() + 2.25);
+        position.setX(position.getX() + mueve);
     }
     public void reiniciar(ArrayList<Ganar> win) {
         win.get(0).update( Assets.blanco);
@@ -343,41 +408,44 @@ public abstract class Jugador {
             vidas.get(i).update(personaje.get(14));
         }
     }
-    public void finsonido(Clip murio, Clip teletransporta, tiempo tiempo, Clip llegi){
+    public void finsonido(Clip murio, Clip teletransporta, Clip llegi){
         if(llegi.getMicrosecondPosition()==llegi.getMicrosecondLength() && llegi.getMicrosecondLength()!=0){
             Sounds.close(llegi);
         }
         if(murio.getMicrosecondPosition()==murio.getMicrosecondLength() && murio.getMicrosecondLength()!=0){
-            tiempo.Contar(0);
             Sounds.close(murio);
             pierde=false;
+            start=new Date();
         }
         if(teletransporta.getMicrosecondLength()==teletransporta.getMicrosecondPosition() && teletransporta.getMicrosecondLength()!=0){
             Sounds.close(teletransporta);
         }
     }
-    public boolean miratiempo(int x,int tiempo){
-        if(tiempo==30){
-
-            lives--;
-            vidas.get(lives).update(Assets.blanco);
-            position.setX(x);
-            position.setY(635);
-            texture=personaje.get(0);
-            return true;
-        }
-        return false;
+    public abstract int getLives();
+    public abstract int getScore();
+    public abstract void caambiaincial();
+    public void iniciapausa(){
+        pausestart=new Date();
     }
-    public void acera(int x){
+    public void terminapausa(){
+        pauseend=new Date();
+        tiempopausa+=(int)((pauseend.getTime()-pausestart.getTime())/1000);
+    }
+    public void perdio(double x){
+        movido=0;
+        tiempopausa=0;
+        muere=true;
+        cortasalto=true;
+        pierde=true;
+        score -= 100;
         lives--;
         vidas.get(lives).update(Assets.blanco);
         position.setX(x);
         position.setY(635);
-        texture = personaje.get(0);
+        texture=personaje.get(0);
     }
-    public abstract int getLives();
-    public abstract int getScore();
-    public abstract void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos);
+
+    public abstract void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos, ArrayList<Sorpresas> powers);
 
     public abstract void draw(Graphics g);
 

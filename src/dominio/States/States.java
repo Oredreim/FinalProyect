@@ -7,6 +7,8 @@ import dominio.Obstaculos.Trunks.TrunkA;
 import dominio.Obstaculos.Trunks.TrunkB;
 import dominio.Obstaculos.Trunks.TrunkC;
 import dominio.Obstaculos.Turtles.*;
+import dominio.Sorpresas.Acelerar;
+import dominio.Sorpresas.Sorpresas;
 import dominio.Vector2D;
 import presentacion.*;
 
@@ -17,6 +19,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 public abstract class States extends State {
     protected ArrayList<Message> messages = new ArrayList<Message>();
@@ -25,7 +28,7 @@ public abstract class States extends State {
     protected ArrayList<Turtle> turtles = new ArrayList<>();
 
     protected ArrayList<Charco> charcos = new ArrayList<>();
-
+    protected ArrayList<Sorpresas> sorpresas = new ArrayList<>();
     protected ArrayList<BufferedImage> personaje1,personaje2;
     protected BufferedImage background;
     protected String string;
@@ -38,7 +41,8 @@ public abstract class States extends State {
     protected boolean cambia=false;
     protected Clip backsound = AudioSystem.getClip();
     protected InputStream back;
-    protected int timep1,timep2;
+    protected Date start=new Date();
+    protected Date end=new Date();
 
     public States() throws LineUnavailableException {};
 
@@ -172,7 +176,7 @@ public abstract class States extends State {
         turtles.add(turtled4);
     }
     public void charcos(){
-        double x = (int) (Math.random() * (112 - 0)) + 0;
+        double x = (int) (Math.random() * (421 - 0)) + 0;
         double y = (int) (Math.random() * (591 - 410)) + 410;
         Charco charco1 = new Charco(new Vector2D(x,y),Assets.charco);
         charcos.add(charco1);
@@ -226,7 +230,12 @@ public abstract class States extends State {
         Sounds.reproduce(backsound,back,false);
 
     }
-
+    public void acelerador(){
+        double x = (int) (Math.random() * (901 - 0)) + 0;
+        double y = (int) (Math.random() * (591 - 410)) + 410;
+        Acelerar acelerardor = new Acelerar(new Vector2D(x,y),Assets.acelera);
+        sorpresas.add(acelerardor);
+    }
     public void update() throws LineUnavailableException {
 
         if(KeyBoard.exit){
@@ -251,6 +260,9 @@ public abstract class States extends State {
     }
     public void draw(Graphics g) {
         g.drawImage(background, 0, 0, null);
+        for (int i = 0; i < sorpresas.size(); i++) {
+            sorpresas.get(i).draw(g);
+        }
         for (int i = 0; i < charcos.size(); i++) {
             charcos.get(i).draw(g);
         }

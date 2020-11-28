@@ -6,8 +6,14 @@ import dominio.Obstaculos.Trunks.Trunk;
 import dominio.Obstaculos.Turtles.Turtle;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
+import dominio.Sorpresas.Acelerar;
+import dominio.Sorpresas.Caparazon;
+import dominio.Sorpresas.Sorpresas;
 import dominio.Vector2D;
-import presentacion.*;
+import presentacion.Assets;
+import presentacion.KeyBoard;
+import presentacion.Sounds;
+import presentacion.Text;
 
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
@@ -16,9 +22,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 public  class Player extends Jugador {
-    public tiempo tiempo=new tiempo();
 
     public Player(Vector2D position, BufferedImage texture, ArrayList<BufferedImage> personaje, ArrayList<Lives> vidas, int tipo) throws LineUnavailableException {
         super(position,texture,personaje,vidas,tipo);
@@ -40,8 +46,8 @@ public  class Player extends Jugador {
         }
     }
     @Override
-    public void finsonido(Clip murio, Clip teletransporta,tiempo tiempo, Clip llego){
-        super.finsonido(murio,teletransporta, tiempo, llego);
+    public void finsonido(Clip murio, Clip teletransporta, Clip llego){
+        super.finsonido(murio,teletransporta, llego);
     }
 
     public void verificar(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles){
@@ -51,13 +57,7 @@ public  class Player extends Jugador {
             reiniciar(win);
         }
         if (muere) {
-            tiempo.Detener();
-            tiempo.reinicia();
-            cortasalto=true;
-            pierde=true;
-            score -= 100;
-            lives--;
-            vidas.get(lives).update(Assets.blanco);
+            perdio();
         }
     }
     public void movimientodoble(ArrayList<Ganar> win){
@@ -69,9 +69,6 @@ public  class Player extends Jugador {
                 (position.getX() > 725 && position.getX() < 755) || (position.getX() > 855 && position.getX() < 885)) &&
                 movido == 0) || (movido != 0 && presiono == "b")) {
             fin(win, llega,Sounds.llegap1);
-            tiempo.Detener();
-            tiempo.reinicia();
-            tiempo.Contar(0);
         } else if (((KeyBoard.down ||KeyBoard.down2) && position.getY() <= 600 && movido == 0) || (movido != 0 && presiono == "c")) {
             down(jump,Sounds.jumpp1);
         } else if (((KeyBoard.left || KeyBoard.left2) && position.getX() > 10 && movido == 0) || (movido != 0 && presiono == "d")) {
@@ -79,7 +76,13 @@ public  class Player extends Jugador {
         } else if (((KeyBoard.right || KeyBoard.right2) && position.getX() < 880 && movido == 0) || (movido != 0 && presiono == "e")) {
             right(jump,Sounds.jumpp1);
         }
+        else if (KeyBoard.powerp1){
+            activaPower();
+        }
 
+    }
+    public void activaPower(){
+        super.activaPower();
     }
     public void movimiento(ArrayList<Ganar> win){
         if ((KeyBoard.up && position.getY() >= 170 && movido == 0) || (movido != 0 && presiono == "a")) {
@@ -90,9 +93,7 @@ public  class Player extends Jugador {
                 (position.getX() > 725 && position.getX() < 755) || (position.getX() > 855 && position.getX() < 885)) &&
                 movido == 0) || (movido != 0 && presiono == "b")) {
             fin(win, llega,Sounds.llegap1);
-            tiempo.Detener();
-            tiempo.reinicia();
-            tiempo.Contar(0);
+            tiempopausa=0;
         } else if ((KeyBoard.down && position.getY() <= 600 && movido == 0) || (movido != 0 && presiono == "c")) {
             down(jump,Sounds.jumpp1);
         } else if ((KeyBoard.left && position.getX() > 10 && movido == 0) || (movido != 0 && presiono == "d")) {
@@ -102,26 +103,43 @@ public  class Player extends Jugador {
         }
 
     }
-    @Override
-    public void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos) {
-        if(super.miratiempo(300,tiempo.getSegundos())){
+    public void tiempo(){
+        end=new Date();
+        interval=30-(int)((end.getTime()-start.getTime())/1000)+tiempopausa;
+        if(interval==0){
             Sounds.reproduce(murio,Sounds.pierdep1,false);
-            tiempo.Detener();
-            tiempo.reinicia();
+            perdio();
+
         }
         if ((position.getY() == 635 || position.getY() == 365) && !anden) {
-            segundos=30-tiempo.getSegundos()-5;
+            segundos=interval-5;
             anden=true;
         }
         if(anden && position.getY()!=635 && position.getY()!=365){
             anden=false;
         }
-        if(anden && 30-tiempo.getSegundos()==segundos){
-            super.acera(300);
-            tiempo.Detener();
-            tiempo.reinicia();
+        if(anden && interval==segundos){
             Sounds.reproduce(murio,Sounds.pierdep1,false);
+            perdio();
         }
+    }
+    public void sorpresas(ArrayList<Sorpresas>powers){
+        super.sorpresas(powers);
+    }
+    public void activos(){
+        if(interval==tiempoPower && caparazon==true){
+            caparazon=false;
+            sorpresas.remove(0);
+        }
+        else if(interval==tiempoPower && acelerador==true){
+            acelerador=false;
+            sorpresas.remove(0);
+        }
+    }
+    @Override
+    public void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos,ArrayList<Sorpresas> powers) {
+        sorpresas(powers);
+        activos();
         if(!charco){
             desliza=charcos(charcos);
         }
@@ -132,6 +150,7 @@ public  class Player extends Jugador {
             verificar(win, cars, trunks, turtles);
         }
         if (!muere && !desliza) {
+            tiempo();
             if(cortasalto && jump.getMicrosecondLength()==jump.getMicrosecondPosition()){
                 Sounds.close(jump);
                 cortasalto=false;
@@ -142,7 +161,24 @@ public  class Player extends Jugador {
                 movimiento(win);
             }
         }
-        finsonido(murio,teletransporta,tiempo,llega);
+        poderes="";
+        if(sorpresas.size()>0) {
+            if (sorpresas.get(0) instanceof Acelerar) {
+                poderes += "A";
+            }
+            if (sorpresas.get(0) instanceof Caparazon) {
+                poderes += "C";
+            }
+        }
+        if(sorpresas.size()>1){
+            if(sorpresas.get(1) instanceof Caparazon){
+                poderes+=" C";
+            }
+            if (sorpresas.get(1) instanceof Acelerar) {
+                poderes += " A";
+            }
+        }
+        finsonido(murio,teletransporta,llega);
     }
     @Override
     public boolean interacciones(ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,InputStream pierde, Clip murio){
@@ -172,9 +208,10 @@ public  class Player extends Jugador {
         if(score<0){
             score=0;
         }
-        Text.drawText(g,"Time: "+Integer.toString(30-tiempo.getSegundos()),new Vector2D(50,70),true, Color.WHITE,Assets.fontMed);
+        Text.drawText(g,"Time: "+Integer.toString(interval),new Vector2D(50,70),true, Color.WHITE,Assets.fontMed);
         Text.drawText(g,"Score: "+Integer.toString(score),new Vector2D(50,35),true, Color.WHITE,Assets.fontMed);
         Text.drawText(g,"X"+Integer.toString(lives),new Vector2D(170,702),true, Color.WHITE,Assets.fontMed);
+        Text.drawText(g,"Powers "+poderes,new Vector2D(240,702),true, Color.WHITE,Assets.fontMed);
         Graphics2D g2d = (Graphics2D)g;
 
         at = AffineTransform.getTranslateInstance(position.getX(), position.getY());
@@ -214,4 +251,18 @@ public  class Player extends Jugador {
         return this.texture;
     }
 
+    @Override
+    public void caambiaincial() {
+        start=new Date();
+    }
+    public void perdio(){
+        super.perdio(position.getX());
+
+    }
+    public void iniciapausa(){
+        super.iniciapausa();
+    }
+    public void terminapausa(){
+        super.terminapausa();
+    }
 }

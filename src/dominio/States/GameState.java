@@ -15,6 +15,7 @@ import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class GameState extends States {
 
@@ -134,14 +135,14 @@ public class GameState extends States {
     public void verifica() throws LineUnavailableException {
         if (player1.getLives() > 0 && pausa == false && !sube) {
             super.update();
-            player1.update(win, cars, trunks, turtles, charcos);
+            player1.update(win, cars, trunks, turtles, charcos,sorpresas);
         } else if (player1.getLives() == 0) {
             Sounds.close(backsound);
             State.changeState(new GameOver(tipo, "Game over", player1.getScore(), string, personaje1, personaje2, background,"l"));
         }
     }
     public void cambia(){
-        player1.tiempo.Contar(0);
+        player1.caambiaincial();
         player1.reiniciar(win);
         player1.position.setY(635);
         cambia = false;
@@ -150,7 +151,6 @@ public class GameState extends States {
         }
     }
     public void llega(){
-        player1.tiempo.Detener();
         player1.llego=0;
         Sounds.close(backsound);
         detiene=true;
@@ -168,14 +168,20 @@ public class GameState extends States {
 
     @Override
     public void update() throws LineUnavailableException {
+        end=new Date();
+        System.out.println((int)((end.getTime()-start.getTime())/1000));
+        if((int)((end.getTime()-start.getTime())/1000)==15){
+            start=new Date();
+            acelerador();
+        }
         if(KeyBoard.pause && !pausa) {
             pausa = true;
-            player1.tiempo.Detener();
-            timep1=player1.tiempo.getSegundos();
+            player1.iniciapausa();
         }
         else if(KeyBoard.pause && pausa) {
             pausa = false;
-            player1.tiempo.Contar(timep1);
+            player1.terminapausa();
+            //player1.timer.start();
         }
         if(pausa==false) {
             verifica();
@@ -206,7 +212,9 @@ public class GameState extends States {
         }
 
     }
-
+    public void acelerador(){
+        super.acelerador();
+    }
     public ArrayList<Message> getMessages() {
         return messages;
     }

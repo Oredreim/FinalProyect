@@ -80,6 +80,9 @@ public class Assets {
     public static Font fontBig;
     public static Font fontEnd;
 
+    public static BufferedImage acelera;
+    public static BufferedImage caparazon;
+
 
 
 
@@ -148,6 +151,8 @@ public class Assets {
         dia=Loader.imageLoader("/res/dia.png");
         noche=Loader.imageLoader("/res/noche.png");
         charco= Loader.imageLoader("/res/charco.png");
+        acelera= Loader.imageLoader("/res/acelerar.png");
+        caparazon= Loader.imageLoader("/res/turtle.png");
 
         //sonido = Loader.loadSound("/Resources/sonido.mp3");
 

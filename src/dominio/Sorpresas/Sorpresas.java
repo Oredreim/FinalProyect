@@ -1,22 +1,19 @@
 package dominio.Sorpresas;
 
 import dominio.Vector2D;
-import dominio.Players.Humans.Player;
-import dominio.Players.Humans.Player2;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public abstract class Sorpresas {
 
     protected AffineTransform at;
-    protected BufferedImage texture;
+    public BufferedImage texture;
     protected double x;
     protected double y;
     protected double vel = 0;
-    protected Vector2D position;
+    public Vector2D position;
     protected boolean dead;
 
     public Sorpresas(Vector2D position, BufferedImage texture) {

@@ -1,17 +1,16 @@
 package presentacion;
 
-import dominio.*;
-
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyBoard implements KeyListener {
 
     public boolean[] keys = new boolean[256];
-    public static boolean up, down, left, right, up2, down2, left2, right2, pause, back,exit;
+    public static boolean up, down, left, right, up2, down2, left2, right2, pause, back,exit,powerp1,powerp2;
 
     public KeyBoard(){
+        powerp1=false;
+        powerp2=false;
         pause=false;
         exit = false;
         up = false;
@@ -25,6 +24,8 @@ public class KeyBoard implements KeyListener {
     }
 
     public void update(){
+        powerp1=keys[KeyEvent.VK_F];
+        powerp2=keys[KeyEvent.VK_M];
         pause=keys[KeyEvent.VK_P];
         exit = keys[KeyEvent.VK_Q];
         up = keys[KeyEvent.VK_W];
