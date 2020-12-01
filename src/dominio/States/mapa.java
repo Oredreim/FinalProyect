@@ -17,7 +17,7 @@ public class mapa extends State{
     private String string;
     File archivo;
     FileInputStream entrada;
-    public mapa(int tipo, ArrayList<BufferedImage> personaje1, ArrayList<BufferedImage> personaje2, String string, Clip elige){
+    public mapa(int tipo, ArrayList<BufferedImage> personaje1, ArrayList<BufferedImage> personaje2, String string, Clip elige,int tipomachine1, int tipomachine2,ArrayList<String>puntajes){
         this.string = string;
         buttons = new ArrayList<>();
         buttons.add(new Button(
@@ -33,10 +33,16 @@ public class mapa extends State{
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
                         if (tipo==1){
-                            State.changeState(new GameState(tipo,personaje1,Assets.backgrounddia,string));
+                            State.changeState(new GameState(tipo,personaje1,Assets.backgrounddia,string,puntajes));
                         }
                         else if (tipo==2){
-                            State.changeState(new GameStateVSplayer(tipo,personaje1,personaje2,Assets.backgrounddia,string));
+                            State.changeState(new GameStateVSplayer(tipo,personaje1,personaje2,Assets.backgrounddia,string,puntajes));
+                        }
+                        else if(tipo==3){
+                            State.changeState(new GameStateVSmachine(tipo,personaje1,personaje2,Assets.backgrounddia,string,tipomachine2,puntajes));
+                        }
+                        else if(tipo==4){
+                            State.changeState(new GameStateSpectate(tipo,personaje1,personaje2,Assets.backgrounddia,string,tipomachine1,tipomachine2,puntajes));
                         }
 
                     }
@@ -56,10 +62,16 @@ public class mapa extends State{
                         //GameState.getPlayer2().setName(nombre2);
                         Sounds.close(elige);
                         if (tipo==1){
-                            State.changeState(new GameState(tipo,personaje1,Assets.backgroundnoche,string));
+                            State.changeState(new GameState(tipo,personaje1,Assets.backgroundnoche,string,puntajes));
                         }
                         else if (tipo==2){
-                            State.changeState(new GameStateVSplayer(tipo,personaje1,personaje2,Assets.backgroundnoche,string));
+                            State.changeState(new GameStateVSplayer(tipo,personaje1,personaje2,Assets.backgroundnoche,string,puntajes));
+                        }
+                        else if(tipo==3){
+                            State.changeState(new GameStateVSmachine(tipo,personaje1,personaje2,Assets.backgroundnoche,string,tipomachine2,puntajes));
+                        }
+                        else if(tipo==4){
+                            State.changeState(new GameStateSpectate(tipo,personaje1,personaje2,Assets.backgroundnoche,string,tipomachine1,tipomachine2,puntajes));
                         }
                     }
                 }

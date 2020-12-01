@@ -1,6 +1,9 @@
 package presentacion;
 
+import dominio.Abrir;
 import dominio.States.Seleccion;
+import dominio.States.TipoMaquina;
+import dominio.States.TipoMaquina2;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -14,10 +17,12 @@ public class MenuState extends State{
 
     private ArrayList<Button> buttons;
     private String string;
+    private Clip elige= AudioSystem.getClip();
     File archivo;
     FileInputStream entrada;
     protected Clip moneda= AudioSystem.getClip();;
     public MenuState(String string) throws LineUnavailableException {
+        ArrayList<String> puntajes= Abrir.leer("C:\\Users\\urrea\\IdeaProjects\\FinalProyect\\src\\res\\HIScores.txt");
         Sounds.init();
         Sounds.reproduce(moneda,Sounds.inicia,false);
 
@@ -39,7 +44,10 @@ public class MenuState extends State{
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
                         Sounds.close(moneda);
-                        State.changeState(new Seleccion(1,string));
+                        FileInputStream entrada;
+
+                        Sounds.reproduce(elige,Sounds.selec,true);
+                        State.changeState(new Seleccion(elige,1,string,0,0,puntajes));
 
                     }
                 }
@@ -57,7 +65,8 @@ public class MenuState extends State{
                     	//GameState.getPlayer().setName(nombre1);
                     	//GameState.getPlayer2().setName(nombre2);
                         Sounds.close(moneda);
-                        State.changeState(new Seleccion(2,string));
+                        Sounds.reproduce(elige,Sounds.selec,true);
+                        State.changeState(new Seleccion(elige,2,string,0,0,puntajes));
                     }
                 }
                 
@@ -73,7 +82,9 @@ public class MenuState extends State{
                 new Action() {
                     @Override
                     public void doAction() throws LineUnavailableException {
-                        State.changeState(new Seleccion(2,string));
+                        Sounds.close(moneda);
+                        Sounds.reproduce(elige,Sounds.selec,true);
+                        State.changeState(new TipoMaquina2(elige,3,string,0,puntajes));
                     }
                 }
         ));
@@ -87,7 +98,9 @@ public class MenuState extends State{
                 new Action() {
                     @Override
                     public void doAction() throws LineUnavailableException {
-                        State.changeState(new Seleccion(2,string));
+                        Sounds.close(moneda);
+                        Sounds.reproduce(elige,Sounds.selec,true);
+                        State.changeState(new TipoMaquina(elige,4,string,puntajes));
                     }
                 }
         ));
@@ -112,24 +125,6 @@ public class MenuState extends State{
                 }
         ));
 
-    }
-    public String[] abrir(File archivo) {
-    	String[] partes = null;
-    	String documento = "";
-    	try {
-    		entrada = new FileInputStream(archivo);
-    		int ban;
-    		while ((ban=entrada.read())!=-1) {
-    			char caracter = (char)ban;
-    			documento+=caracter;
-    		}
-    		
-    		partes = documento.split(" ");
-    		for(String s : partes) {
-    			System.out.println(s);
-    		}
-    	}catch(Exception e){	
-    	}return partes;
     }
 
     @Override

@@ -12,6 +12,6 @@ public abstract class State {
         currentState = newState;
     }
 
-    public abstract void update() throws LineUnavailableException;
+    public abstract void update() throws Exception;
     public abstract void draw(Graphics g);
 }

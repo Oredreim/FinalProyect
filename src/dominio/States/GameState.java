@@ -1,5 +1,8 @@
 package dominio.States;
 
+import dominio.Abrir;
+import dominio.FroggerException;
+import dominio.Guardar;
 import dominio.Obstaculos.Cars.Car;
 import dominio.Obstaculos.Trunks.TrunkA;
 import dominio.Obstaculos.Trunks.TrunkB;
@@ -8,6 +11,8 @@ import dominio.Obstaculos.Turtles.Turtle;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
 import dominio.Players.Humans.Player;
+import dominio.Sorpresas.Acelerar;
+import dominio.Sorpresas.Caparazon;
 import dominio.Vector2D;
 import presentacion.*;
 
@@ -16,15 +21,16 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Date;
-
 public class GameState extends States {
 
     private Player player1;
     protected ArrayList<Lives> lives = new ArrayList<>();
     protected ArrayList<Ganar> win = new ArrayList<>();
+    private ArrayList<String>puntajes;
 
-    public GameState(int tipo,ArrayList<BufferedImage> personaje, BufferedImage background, String string) throws LineUnavailableException {
+    public GameState(int tipo,ArrayList<BufferedImage> personaje, BufferedImage background, String string,ArrayList<String>puntajes) throws LineUnavailableException {
         this();
+        this.puntajes=puntajes;
         this.tipo=tipo;
         this.string=string;
         this.background=background;
@@ -132,13 +138,13 @@ public class GameState extends States {
         Lives live10p1 = new Lives(new Vector2D(135,680),personaje1.get(14));
         lives.add(live10p1);
     }
-    public void verifica() throws LineUnavailableException {
+    public void verifica() throws LineUnavailableException, FroggerException {
         if (player1.getLives() > 0 && pausa == false && !sube) {
             super.update();
             player1.update(win, cars, trunks, turtles, charcos,sorpresas);
         } else if (player1.getLives() == 0) {
             Sounds.close(backsound);
-            State.changeState(new GameOver(tipo, "Game over", player1.getScore(), string, personaje1, personaje2, background,"l"));
+            State.changeState(new GameOver(tipo, "Game over", player1.getScore(), string, personaje1, personaje2, background,"l",0,0,puntajes));
         }
     }
     public void cambia(){
@@ -159,48 +165,150 @@ public class GameState extends States {
     }
     public void gana() throws LineUnavailableException {
         Sounds.close(backsound);
-        State.changeState(new GameOver(tipo, "Yow winner", player1.getScore(), string, personaje1, personaje2, background,"w"));
+        State.changeState(new GameOver(tipo, "Yow winner", player1.getScore(), string, personaje1, personaje2, background,"w",0,0,puntajes));
     }
     @Override
     public void sounds() {
         super.sounds();
     }
 
+    public void guarda(){
+        ArrayList<String> datos=new ArrayList<>();
+        datos.add(Double.toString(player1.position.getX())+"\n");
+        datos.add(Double.toString(player1.position.getY())+"\n");
+        datos.add(player1.poderes+"\n");
+        datos.add(Integer.toString(player1.getLives())+"\n");
+        datos.add(Integer.toString(player1.llego)+"\n");
+        datos.add(player1.start+"\n");
+        datos.add(player1.end+"\n");
+        datos.add(Integer.toString(player1.tiempopausa)+"\n");
+        datos.add(Integer.toString(player1.getScore())+"\n");
+        if(player1.personaje.get(0)==Assets.player1up3){
+            datos.add("1"+"\n");
+        }
+        else if(player1.personaje.get(0)==Assets.player2up3){
+            datos.add("2"+"\n");
+        }
+        String sx="";
+        for(int i=0;i<win.size()-1;i++){
+            if(win.get(i).getTexture()==Assets.blanco){
+                sx+="0"+" ";
+            }
+            else {
+                sx+="1"+" ";
+            }
+        }
+        if(win.get(win.size()-1).getTexture()==Assets.blanco){
+            sx+="0";
+        }
+        else {
+            sx+="1";
+        }
+        datos.add(sx+"\n");
+
+        datos=super.guarda(datos);
+
+        Guardar.guarda(datos,"C:\\Users\\urrea\\IdeaProjects\\FinalProyect\\src\\res\\1player.txt");
+    }
+    public void carga() throws FroggerException {
+        Datos= Abrir.leer("C:\\Users\\urrea\\IdeaProjects\\FinalProyect\\src\\res\\1player.txt");
+        /*if(Datos.size()==0){
+            throw new FroggerException(FroggerException.NOHAYDATOS);
+        }*/
+        player1.position.setX(Double.valueOf(Datos.get(0)));
+        player1.position.setY(Double.valueOf(Datos.get(1)));
+        player1.poderes=Datos.get(2);
+        if(player1.poderes!=""){
+            String[]powers=player1.poderes.split(" ");
+            if(powers[0].equals("A")){
+                player1.sorpresas.add(new Acelerar(new Vector2D(0,0),Assets.acelera));
+            }
+            else {
+                player1.sorpresas.add(new Caparazon(new Vector2D(0,0),Assets.caparazon));
+            }
+            if(powers.length==2){
+                if(powers[1].equals("A")){
+                    player1.sorpresas.add(new Acelerar(new Vector2D(0,0),Assets.acelera));
+                }
+                else {
+                    player1.sorpresas.add(new Caparazon(new Vector2D(0,0),Assets.caparazon));
+                }
+            }
+        }
+        player1.llego=Integer.valueOf(Datos.get(4));
+        //player1.start= parse(Datos.get(5));
+        //player1.end=new Date(Datos.get(6));
+        //player1.tiempopausa=Integer.valueOf(Datos.get(7));
+        player1.setScore(Integer.valueOf(Datos.get(8)));
+        if(Datos.get(9).equals("1")){
+            player1.personaje=Seleccion.getVerde();
+        }
+        else {
+            player1.personaje=Seleccion.getRoja();
+        }
+        player1.setTexture();
+        player1.setlives(Integer.valueOf(Datos.get(3)));
+        cargo=true;
+        String[]llegado=Datos.get(10).split(" ");
+        for(int i=0;i<llegado.length;i++){
+            if(llegado[i].equals("1")){
+                win.get(i).setTexture(player1.personaje.get(12));
+            }
+        }
+        super.carga(Datos,11);
+    }
+
     @Override
-    public void update() throws LineUnavailableException {
-        end=new Date();
-        System.out.println((int)((end.getTime()-start.getTime())/1000));
-        if((int)((end.getTime()-start.getTime())/1000)==15){
-            start=new Date();
-            acelerador();
-        }
-        if(!cascaron &&(player1.getLives()==6 || player1.getLives()==2)){
-            caparazon();
-            cascaron=true;
-        }
-        else if(cascaron && player1.getLives()!=6 && player1.getLives()!=2){
-            cascaron=false;
-        }
-        if(KeyBoard.pause && !pausa) {
-            pausa = true;
-            player1.iniciapausa();
-        }
-        else if(KeyBoard.pause && pausa) {
-            pausa = false;
-            player1.terminapausa();
-            //player1.timer.start();
-        }
-        if(pausa==false) {
-            verifica();
-            if (cambia) {
-                cambia();
+    public void update() throws LineUnavailableException, FroggerException {
+        if(!States.salir) {
+            if (KeyBoard.load && !cargo) {
+                try{
+                    carga();
+                }
+                catch (FroggerException e){
+
+                }
             }
-            if (player1.llego == 2) {
-                llega();
+            if (KeyBoard.exit) {
+                guarda();
             }
-            if (sube && level == 6) {
-                gana();
+            end = new Date();
+
+            if (!cascaron && (player1.getLives() == 6 || player1.getLives() == 2)) {
+                caparazon();
+                cascaron = true;
+            } else if (cascaron && player1.getLives() != 6 && player1.getLives() != 2) {
+                cascaron = false;
             }
+            if (KeyBoard.pause && !pausa) {
+                pausa = true;
+                player1.iniciapausa();
+                pausestart = new Date();
+            } else if (KeyBoard.pause && pausa) {
+                pausa = false;
+                player1.terminapausa();
+                pauseend = new Date();
+                tiempopausa = (int) ((pauseend.getTime() - pausestart.getTime()) / 1000);
+            }
+            if (!pausa && (int) ((end.getTime() - start.getTime()) / 1000) + tiempopausa == 15) {
+                start = new Date();
+                acelerador();
+            }
+            if (pausa == false) {
+                verifica();
+                if (cambia) {
+                    cambia();
+                }
+                if (player1.llego == 2) {
+                    llega();
+                }
+                if (sube && level == 6) {
+                    gana();
+                }
+            }
+        }
+        else {
+            super.update();
         }
     }
 
@@ -217,6 +325,8 @@ public class GameState extends States {
             player1.draw(g);
 
         }
+        Text.drawText(g, "HI-SCORE", new Vector2D(450, 40), true, Color.RED, Assets.fontMed);
+        Text.drawText(g, puntajes.get(1), new Vector2D(450, 60), true, Color.RED, Assets.fontMed);
 
     }
     public void acelerador(){

@@ -56,7 +56,7 @@ public class GUI extends JFrame implements Runnable {
         new GUI().start();
     }
 
-    private void update(float dt) throws LineUnavailableException {
+    private void update(float dt) throws Exception {
     	//Se actualiza el tablero que se esta utilizando
         keyBoard.update();
         //Actualizaci�n del estado actual
@@ -124,6 +124,8 @@ public class GUI extends JFrame implements Runnable {
                 try {
                     update((float) (delta * TARGETTIME * 0.000001f));
                 } catch (LineUnavailableException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 draw();

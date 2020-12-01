@@ -11,7 +11,7 @@ import dominio.Obstaculos.Turtles.Turtle;
 import dominio.Players.Generales.Ganar;
 import dominio.Players.Generales.Lives;
 import dominio.Players.Humans.Player;
-import dominio.Players.Humans.Player2;
+import dominio.Players.Humans.machine2;
 import dominio.Sorpresas.Acelerar;
 import dominio.Sorpresas.Caparazon;
 import dominio.Vector2D;
@@ -23,16 +23,15 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class GameStateVSplayer extends States {
-
+public class GameStateVSmachine extends States {
     private Player player1;
-    private Player2 player2;
+    private machine2 player2;
     protected ArrayList<Lives> livesp1 = new ArrayList<>();
     protected ArrayList<Lives> livesp2 = new ArrayList<>();
     protected ArrayList<Ganar> winp1 = new ArrayList<>();
     protected ArrayList<Ganar> winp2 = new ArrayList<>();
     private ArrayList<String>puntajes;
-    public GameStateVSplayer(int tipo,ArrayList<BufferedImage> personaje1, ArrayList<BufferedImage> personaje2, BufferedImage background, String string,ArrayList<String>puntajes) throws LineUnavailableException {
+    public GameStateVSmachine(int tipo, ArrayList<BufferedImage> personaje1, ArrayList<BufferedImage> personaje2, BufferedImage background, String string, int tipomachine,ArrayList<String>puntajes) throws LineUnavailableException {
         this.puntajes=puntajes;
         this.tipo=tipo;
         this.background=background;
@@ -60,9 +59,8 @@ public class GameStateVSplayer extends States {
         ganar();
         lives();
         player1 = new Player(new Vector2D(300, 635), personaje1.get(0), personaje1,livesp1,tipo);
-        player2 = new Player2(new Vector2D(600, 635), personaje2.get(0), personaje2,livesp2,tipo);
+        player2 = new machine2(new Vector2D(600, 635), personaje2.get(0), personaje2,livesp2,tipo,tipomachine);
     }
-
     public void carsA(){
         super.carsA();
     }
@@ -103,7 +101,7 @@ public class GameStateVSplayer extends States {
         super.charcos();
     }
     public void ganar(){
-        Ganar ganar1p1 = new Ganar(new Vector2D(55,100),Assets.blanco);
+        Ganar ganar1p1 = new Ganar(new Vector2D(55,100), Assets.blanco);
         winp1.add(ganar1p1);
         Ganar ganar2p1 = new Ganar(new Vector2D(190,100),Assets.blanco);
         winp1.add(ganar2p1);
@@ -189,11 +187,11 @@ public class GameStateVSplayer extends States {
         } else if (player1.getLives() == 0 && player2.getLives() == 0) {
             Sounds.close(backsound);
             if (player1.getScore() > player2.getScore()) {
-                State.changeState(new GameOver(tipo, "Game over player 1 win", player1.getScore(), string, personaje1, personaje2, background,"l",0,0,puntajes));
+                State.changeState(new GameOver(tipo, "Game over player 1 win", player1.getScore(), string, personaje1, personaje2, background,"l",0,player2.getTipomachine(),puntajes));
             } else if (player1.getScore() < player2.getScore()) {
-                State.changeState(new GameOver(tipo, "Game over player 2 win", player2.getScore(), string, personaje1, personaje2, background,"l",0,0,puntajes));
+                State.changeState(new GameOver(tipo, "Game over machine win", player2.getScore(), string, personaje1, personaje2, background,"l",0,player2.getTipomachine(),puntajes));
             } else {
-                State.changeState(new GameOver(tipo, "Game over draw", player1.getScore(), string, personaje1, personaje2, background,"l",0,0,puntajes));
+                State.changeState(new GameOver(tipo, "Game over draw", player1.getScore(), string, personaje1, personaje2, background,"l",0,player2.getTipomachine(),puntajes));
             }
         }
     }
@@ -221,11 +219,11 @@ public class GameStateVSplayer extends States {
         Sounds.close(backsound);
         if (player1.getScore() > player2.getScore()) {
 
-            State.changeState(new GameOver(tipo, "Player 1 game´s winner", player1.getScore(), string, personaje1, personaje2, background,"w",0,0,puntajes));
+            State.changeState(new GameOver(tipo, "Player 1 game´s winner", player1.getScore(), string, personaje1, personaje2, background,"w",0,player2.getTipomachine(),puntajes));
         } else if (player1.getScore() < player2.getScore()) {
-            State.changeState(new GameOver(tipo, "Player 2 game´s winner", player1.getScore(), string, personaje1, personaje2, background,"w",0,0,puntajes));
+            State.changeState(new GameOver(tipo, "Machine´s winner", player1.getScore(), string, personaje1, personaje2, background,"w",0,player2.getTipomachine(),puntajes));
         } else {
-            State.changeState(new GameOver(tipo, "Draw", player1.getScore(), string, personaje1, personaje2, background,"w",0,0,puntajes));
+            State.changeState(new GameOver(tipo, "Draw", player1.getScore(), string, personaje1, personaje2, background,"w",0,player2.getTipomachine(),puntajes));
         }
     }
     public void guarda(){
@@ -295,9 +293,10 @@ public class GameStateVSplayer extends States {
         }
         datos.add(sx+"\n");
 
+        datos.add(Integer.toString(player2.getTipomachine()));
         datos=super.guarda(datos);
 
-        Guardar.guarda(datos,"C:\\Users\\urrea\\IdeaProjects\\FinalProyect\\src\\res\\vsplayer.txt");
+        Guardar.guarda(datos,"C:\\Users\\urrea\\IdeaProjects\\FinalProyect\\src\\res\\vsmachine.txt");
     }
     public void carga(){
         Datos= Abrir.leer("C:\\Users\\urrea\\IdeaProjects\\FinalProyect\\src\\res\\vsplayer.txt");
@@ -384,7 +383,8 @@ public class GameStateVSplayer extends States {
                 winp1.get(i).setTexture(player2.personaje.get(12));
             }
         }
-        super.carga(Datos,22);
+        player2.setTipomachine(Integer.valueOf(Datos.get(22)));
+        super.carga(Datos,23);
     }
 
     @Override
@@ -393,8 +393,8 @@ public class GameStateVSplayer extends States {
     }
 
     @Override
-    public void update() throws LineUnavailableException,FroggerException {
-        if (!States.salir) {
+    public void update() throws LineUnavailableException, FroggerException {
+        if(!States.salir) {
             if (KeyBoard.load && !cargo) {
                 carga();
             }
@@ -443,8 +443,8 @@ public class GameStateVSplayer extends States {
                     gana();
                 }
             }
-
         }
+
     }
 
     @Override
@@ -465,7 +465,7 @@ public class GameStateVSplayer extends States {
         player1.draw(g);
         player2.draw(g);
         Text.drawText(g, "HI-SCORE", new Vector2D(450, 40), true, Color.RED, Assets.fontMed);
-        Text.drawText(g, puntajes.get(0), new Vector2D(450, 60), true, Color.RED, Assets.fontMed);
+        Text.drawText(g, puntajes.get(2), new Vector2D(450, 60), true, Color.RED, Assets.fontMed);
     }
     public void acelerador(){
         super.acelerador();
@@ -477,3 +477,4 @@ public class GameStateVSplayer extends States {
         return messages;
     }
 }
+

@@ -4,25 +4,22 @@ import dominio.Vector2D;
 import presentacion.Button;
 import presentacion.*;
 
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 
 public class Seleccion extends  State{
+    private static ArrayList<BufferedImage> verde=new ArrayList<>();
     private ArrayList<Button> buttons;
-    private ArrayList<BufferedImage> verde=new ArrayList<>();
-    private ArrayList<BufferedImage> roja=new ArrayList<>();
+    private static ArrayList<BufferedImage> roja=new ArrayList<>();
     private String string;
     File archivo;
-    FileInputStream entrada;
-    protected Clip elige= AudioSystem.getClip();
-    public Seleccion(int tipo, String string) throws LineUnavailableException {
-        Sounds.reproduce(elige,Sounds.selec,true);
+
+    public Seleccion(Clip elige,int tipo, String string, int tipomachine1, int tipomachine2,ArrayList<String>puntajes) throws LineUnavailableException {
+
         //Texturas verde
         verde.add(Assets.player1up3);
         verde.add(Assets.player1up2);
@@ -70,7 +67,7 @@ public class Seleccion extends  State{
                     public void doAction() {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
-                        State.changeState(new mapa(tipo, verde, roja,string,elige));
+                        State.changeState(new mapa(tipo, verde, roja,string,elige,tipomachine1,tipomachine2,puntajes));
 
                     }
                 }
@@ -87,31 +84,14 @@ public class Seleccion extends  State{
                     public void doAction() {
                         //GameState.getPlayer().setName(nombre1);
                         //GameState.getPlayer2().setName(nombre2);
-                        State.changeState(new mapa(tipo, roja, verde,string,elige));
+                        State.changeState(new mapa(tipo, roja, verde,string,elige,tipomachine1,tipomachine2,puntajes));
                     }
                 }
 
         ));
     }
     
-    public String[] abrir(File archivo) {
-        String[] partes = null;
-        String documento = "";
-        try {
-            entrada = new FileInputStream(archivo);
-            int ban;
-            while ((ban=entrada.read())!=-1) {
-                char caracter = (char)ban;
-                documento+=caracter;
-            }
 
-            partes = documento.split(" ");
-            for(String s : partes) {
-                System.out.println(s);
-            }
-        }catch(Exception e){
-        }return partes;
-    }
     @Override
     public void update() throws LineUnavailableException {
         for(Button b: buttons) {
@@ -127,5 +107,11 @@ public class Seleccion extends  State{
         for(Button b: buttons) {
             b.draw(g);
         }
+    }
+    public static ArrayList<BufferedImage> getVerde(){
+        return verde;
+    }
+    public static ArrayList<BufferedImage> getRoja(){
+        return roja;
     }
 }

@@ -36,7 +36,7 @@ public abstract class Jugador{
     protected int reinicia=0;
     protected int lives=10;
     protected int score=0;
-    protected ArrayList<BufferedImage> personaje;
+    public ArrayList<BufferedImage> personaje;
     protected ArrayList<Lives>vidas;
     protected Clip jump = AudioSystem.getClip();
     protected Clip murio = AudioSystem.getClip();
@@ -50,14 +50,14 @@ public abstract class Jugador{
     protected boolean anden=false;
     protected int x;
     public int segundos;
-    protected Date start= new Date();
-    protected Date end = new Date();
-    protected Date pausestart= new Date();
-    protected Date pauseend = new Date();
+    public Date start= new Date();
+    public Date end = new Date();
+    public Date pausestart= new Date();
+    public Date pauseend = new Date();
     protected int interval;
-    protected int tiempopausa=0;
-    protected ArrayList<Sorpresas> sorpresas=new ArrayList<>();
-    protected String poderes="";
+    public int tiempopausa=0;
+    public ArrayList<Sorpresas> sorpresas=new ArrayList<>();
+    public String poderes="";
     protected boolean acelerador=false;
     protected boolean caparazon=false;
     protected int tiempoPower;
@@ -242,7 +242,7 @@ public abstract class Jugador{
         presiono="a";
         if(movido==0){
             if(presiono=="a"){
-                Sounds.reproduce(jump,salto,false);
+               // Sounds.reproduce(jump,salto,false);
             }
         }
         else if(movido>0 && movido<=10){
@@ -256,7 +256,7 @@ public abstract class Jugador{
         }
         else if(movido==38){
             if (presiono=="a"){
-                Sounds.close(jump);
+               // Sounds.close(jump);
             }
             texture = personaje.get(0);
             movido=-2;
@@ -291,7 +291,7 @@ public abstract class Jugador{
             win.get(6).update(personaje.get(12));
         }
         if(!llega.isRunning()){
-            Sounds.reproduce(llega, marca,false);
+            //Sounds.reproduce(llega, marca,false);
         }
         llego+=1;
         movido=0;
@@ -309,7 +309,7 @@ public abstract class Jugador{
         }
         presiono="c";
         if(movido==0){
-            Sounds.reproduce(jump,salto,false);
+            //Sounds.reproduce(jump,salto,false);
         }
         else if(movido>0 && movido<=10){
             texture = personaje.get(3);
@@ -321,7 +321,7 @@ public abstract class Jugador{
             texture = personaje.get(5);
         }
         else if(movido==38){
-            Sounds.close(jump);
+           // Sounds.close(jump);
             texture = personaje.get(3);
             movido=-2;
             score-=10;
@@ -338,7 +338,7 @@ public abstract class Jugador{
         }
         presiono="d";
         if(movido==0){
-            Sounds.reproduce(jump,salto,false);
+            //Sounds.reproduce(jump,salto,false);
         }
         else if(movido>0 && movido<=10){
             texture = personaje.get(6);
@@ -350,7 +350,7 @@ public abstract class Jugador{
             texture = personaje.get(8);
         }
         else if(movido==38){
-            Sounds.close(jump);
+           // Sounds.close(jump);
             texture = personaje.get(6);
             movido=-2;
         }
@@ -366,7 +366,7 @@ public abstract class Jugador{
         }
         presiono="e";
         if(movido==0){
-            Sounds.reproduce(jump,salto,false);
+           // Sounds.reproduce(jump,salto,false);
         }
         else if(movido>0 && movido<=10){
             texture = personaje.get(9);
@@ -378,7 +378,7 @@ public abstract class Jugador{
             texture = personaje.get(11);
         }
         else if(movido==38){
-            Sounds.close(jump);
+          //  Sounds.close(jump);
             texture = personaje.get(9);
             movido=-2;
         }
@@ -432,6 +432,14 @@ public abstract class Jugador{
         tiempopausa+=(int)((pauseend.getTime()-pausestart.getTime())/1000);
     }
     public void perdio(double x){
+        if(caparazon){
+            caparazon=false;
+            sorpresas.remove(0);
+        }
+        if(acelerador){
+            acelerador=false;
+            sorpresas.remove(0);
+        }
         movido=0;
         tiempopausa=0;
         muere=true;
@@ -444,7 +452,13 @@ public abstract class Jugador{
         position.setY(635);
         texture=personaje.get(0);
     }
-
+    public void setCantidadLives(){
+        lives--;
+        vidas.get(lives).update(Assets.blanco);
+    }
+    public void setAssetLives(int i){
+        vidas.get(i).update(personaje.get(14));
+    }
     public abstract void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos, ArrayList<Sorpresas> powers);
 
     public abstract void draw(Graphics g);

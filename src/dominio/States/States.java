@@ -1,5 +1,7 @@
 package dominio.States;
 
+import dominio.FroggerException;
+import dominio.JPanelSalida;
 import dominio.Obstaculos.Cars.*;
 import dominio.Obstaculos.Charco.Charco;
 import dominio.Obstaculos.Trunks.Trunk;
@@ -45,6 +47,16 @@ public abstract class States extends State {
     protected Date start=new Date();
     protected Date end=new Date();
     protected boolean cascaron=false;
+    protected boolean cascaron2=false;
+    protected ArrayList<String>Datos=new ArrayList<>();
+    protected  boolean cargo=false;
+    protected Date pausestart= new Date();
+    protected Date pauseend = new Date();
+    protected  int tiempopausa;
+    public static boolean salir=false;
+    private boolean movio=false;
+
+    private JPanelSalida jPanelSalida;
 
     public States() throws LineUnavailableException {};
 
@@ -212,6 +224,105 @@ public abstract class States extends State {
         }
         Sounds.reproduce(backsound,back,true);
     }
+    public ArrayList<String> guarda(ArrayList<String> datos){
+        datos.add(Integer.toString(level)+"\n");
+        if(background.equals(Assets.backgrounddia)){
+            datos.add("1"+"\n");
+        }
+        else {
+            datos.add("2"+"\n");
+        }
+        String xs="";
+        for (int i=0;i<cars.size()-1;i++){
+            xs+=Double.toString(cars.get(i).position.getX())+" ";
+        }
+        xs+=Double.toString(cars.get(cars.size()-1).position.getX())+" "+Double.toString(Car.speed);
+        datos.add(xs+"\n");
+        xs="";
+        for (int i=0;i<trunks.size()-1;i++){
+            xs+=Double.toString(trunks.get(i).position.getX())+" ";
+        }
+        xs+=Double.toString(trunks.get(trunks.size()-1).position.getX())+" "+Double.toString(TrunkA.speed)+" "+Double.toString(TrunkB.speed)+" "+Double.toString(TrunkC.speed);
+        datos.add(xs+"\n");
+        xs="";
+        for (int i=0;i<turtles.size()-1;i++){
+            xs+=Double.toString(turtles.get(i).position.getX())+" ";
+        }
+        xs+=Double.toString(turtles.get(turtles.size()-1).position.getX())+" "+Double.toString(Turtle.speed);
+        datos.add(xs+"\n");
+        xs="";
+        for (int i=0;i<charcos.size()-1;i++){
+            xs+=Double.toString(charcos.get(i).position.getX())+" "+Double.toString(charcos.get(i).position.getY())+" ";
+        }
+        xs+=Double.toString(charcos.get(charcos.size()-1).position.getX())+" "+Double.toString(charcos.get(charcos.size()-1).position.getY());
+        datos.add(xs+"\n");
+        xs="";
+        if(sorpresas.size()>0) {
+            for (int i = 0; i < sorpresas.size() - 1; i++) {
+                if (sorpresas.get(i) instanceof Acelerar) {
+                    xs += "1" + " " + Double.toString(sorpresas.get(i).position.getX()) + " "+Double.toString(charcos.get(i).position.getY())+" ";
+                } else {
+                    xs += "2" + " " + Double.toString(charcos.get(i).position.getX()) + " "+Double.toString(charcos.get(i).position.getY())+" ";
+                }
+            }
+            if (sorpresas.get(sorpresas.size() - 1) instanceof Acelerar) {
+                xs += "1" + " " + Double.toString(sorpresas.get(sorpresas.size() - 1).position.getX())+ " "+Double.toString(charcos.get(sorpresas.size() - 1).position.getY());
+            } else {
+                xs += "2" + " " + Double.toString(charcos.get(charcos.size() - 1).position.getX())+ " "+Double.toString(charcos.get(charcos.size() - 1).position.getY());
+            }
+
+        }
+        datos.add(xs+"\n");
+        return datos;
+    }
+    public void carga(ArrayList<String> Datos,int pos){
+        level=Integer.valueOf(Datos.get(pos));
+        pausa=true;
+        pos++;
+        if(Datos.get(pos).equals("1")){
+            background=Assets.backgrounddia;
+        }
+        else {
+            background=Assets.backgroundnoche;
+        }
+        pos++;
+        String[]xcarros=Datos.get(pos).split(" ");
+        for (int i=0;i<cars.size();i++){
+            cars.get(i).position.setX(Double.valueOf(xcarros[i]));
+        }
+        pos++;
+        Car.speed=Double.valueOf(xcarros[xcarros.length-1]);
+        String[]xtrunks=Datos.get(pos).split(" ");
+        for (int i=0;i<trunks.size();i++){
+            trunks.get(i).position.setX(Double.valueOf(xtrunks[i]));
+        }
+        TrunkA.speed=Double.valueOf(xtrunks[xtrunks.length-3]);
+        TrunkB.speed=Double.valueOf(xtrunks[xtrunks.length-2]);
+        TrunkC.speed=Double.valueOf(xtrunks[xtrunks.length-1]);
+        pos++;
+        String[]xturtles=Datos.get(pos).split(" ");
+        for (int i=0;i<turtles.size();i++){
+            turtles.get(i).position.setX(Double.valueOf(xturtles[i]));
+        }
+        Turtle.speed=Double.valueOf(xturtles[xturtles.length-1]);
+        pos++;
+        String[]xycharcos=Datos.get(pos).split(" ");
+        for (int i=0;i<charcos.size();i++){
+            charcos.get(i).position.setX(Double.valueOf(xycharcos[i*2]));
+            charcos.get(i).position.setY(Double.valueOf(xycharcos[(i*2)+1]));
+        }
+        pos++;
+        if(Datos.size()==pos+1) {
+            String[] powers = Datos.get(pos).split(" ");
+            for (int i = 0; i < powers.length / 3; i++) {
+                if (powers[i * 3].equals("1")) {
+                    sorpresas.add(new Acelerar(new Vector2D(Double.valueOf(powers[(i * 3) + 1]), Double.valueOf(powers[(i * 3) + 2])), Assets.acelera));
+                } else {
+                    sorpresas.add(new Caparazon(new Vector2D(Double.valueOf(powers[(i * 3) + 1]), Double.valueOf(powers[(i * 3) + 2])), Assets.caparazon));
+                }
+            }
+        }
+    }
     public void dicenivel(){
         if (level==1){
             back=Sounds.roundone;
@@ -251,25 +362,36 @@ public abstract class States extends State {
         Caparazon caparazon = new Caparazon(new Vector2D(x,y),Assets.caparazon);
         sorpresas.add(caparazon);
     }
-    public void update() throws LineUnavailableException {
+    public void update() throws FroggerException, LineUnavailableException {
 
-        if(KeyBoard.exit){
-            State.changeState(new MenuState(string));
-            Sounds.close(backsound);
-        }
-
-        for (int i = 0; i < cars.size(); i++) {
-            if (cars.get(i) instanceof CarB) {
-                cars.get(i).update(-1);
-            } else {
-                cars.get(i).update(1);
+        if(KeyBoard.exit ){
+            if(!salir){
+                jPanelSalida=new JPanelSalida();
+                salir=true;
+            }
+            if(!jPanelSalida.jpanel.isVisible()) {
+                Sounds.close(backsound);
+                salir=false;
+                movio=false;
+                KeyBoard.exit=false;
+                State.changeState(new MenuState(string));
+                KeyBoard.setKeys();
             }
         }
-        for (int i = 0; i < trunks.size(); i++) {
-            trunks.get(i).update();
-        }
-        for (int i = 0; i < turtles.size(); i++) {
-            turtles.get(i).update();
+        if(!salir) {
+            for (int i = 0; i < cars.size(); i++) {
+                if (cars.get(i) instanceof CarB) {
+                    cars.get(i).update(-1);
+                } else {
+                    cars.get(i).update(1);
+                }
+            }
+            for (int i = 0; i < trunks.size(); i++) {
+                trunks.get(i).update();
+            }
+            for (int i = 0; i < turtles.size(); i++) {
+                turtles.get(i).update();
+            }
         }
 
     }

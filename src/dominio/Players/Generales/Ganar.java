@@ -1,8 +1,6 @@
 package dominio.Players.Generales;
 
 import dominio.Vector2D;
-import presentacion.Assets;
-import presentacion.GUI;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -26,5 +24,11 @@ public  class Ganar {
         Graphics2D g2d = (Graphics2D)g;
         at = AffineTransform.getTranslateInstance(position.getX(), position.getY());
         g2d.drawImage(texture, (int)position.getX(), (int)position.getY(), null);
+    }
+    public BufferedImage getTexture(){
+        return texture;
+    }
+    public void setTexture(BufferedImage imagen){
+        texture=imagen;
     }
 }

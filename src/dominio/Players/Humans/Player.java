@@ -9,6 +9,7 @@ import dominio.Players.Generales.Lives;
 import dominio.Sorpresas.Acelerar;
 import dominio.Sorpresas.Caparazon;
 import dominio.Sorpresas.Sorpresas;
+import dominio.States.States;
 import dominio.Vector2D;
 import presentacion.Assets;
 import presentacion.KeyBoard;
@@ -101,6 +102,9 @@ public  class Player extends Jugador {
         } else if ((KeyBoard.right && position.getX() < 880 && movido == 0) || (movido != 0 && presiono == "e")) {
             right(jump,Sounds.jumpp1);
         }
+        else if (KeyBoard.powerp1){
+            activaPower();
+        }
 
     }
     public void tiempo(){
@@ -138,47 +142,49 @@ public  class Player extends Jugador {
     }
     @Override
     public void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos,ArrayList<Sorpresas> powers) {
-        sorpresas(powers);
-        activos();
-        if(!charco){
-            desliza=charcos(charcos);
-        }
-        if(desliza){
-            desliza();
-        }
-        if(!pierde && !desliza && !caparazon){
-            verificar(win, cars, trunks, turtles);
-        }
-        if (!muere && !desliza) {
-            tiempo();
-            if(cortasalto && jump.getMicrosecondLength()==jump.getMicrosecondPosition()){
-                Sounds.close(jump);
-                cortasalto=false;
+        if(!States.salir) {
+            sorpresas(powers);
+            activos();
+            if (!charco) {
+                desliza = charcos(charcos);
             }
-            if(tipo==1){
-                movimientodoble(win);
-            }else{
-                movimiento(win);
+            if (desliza) {
+                desliza();
             }
+            if (!pierde && !desliza && !caparazon) {
+                verificar(win, cars, trunks, turtles);
+            }
+            if (!muere && !desliza) {
+                tiempo();
+                if (cortasalto && jump.getMicrosecondLength() == jump.getMicrosecondPosition()) {
+                    Sounds.close(jump);
+                    cortasalto = false;
+                }
+                if (tipo == 1) {
+                    movimientodoble(win);
+                } else {
+                    movimiento(win);
+                }
+            }
+            poderes = "";
+            if (sorpresas.size() > 0) {
+                if (sorpresas.get(0) instanceof Acelerar) {
+                    poderes += "A";
+                }
+                if (sorpresas.get(0) instanceof Caparazon) {
+                    poderes += "C";
+                }
+            }
+            if (sorpresas.size() > 1) {
+                if (sorpresas.get(1) instanceof Caparazon) {
+                    poderes += " C";
+                }
+                if (sorpresas.get(1) instanceof Acelerar) {
+                    poderes += " A";
+                }
+            }
+            finsonido(murio, teletransporta, llega);
         }
-        poderes="";
-        if(sorpresas.size()>0) {
-            if (sorpresas.get(0) instanceof Acelerar) {
-                poderes += "A";
-            }
-            if (sorpresas.get(0) instanceof Caparazon) {
-                poderes += "C";
-            }
-        }
-        if(sorpresas.size()>1){
-            if(sorpresas.get(1) instanceof Caparazon){
-                poderes+=" C";
-            }
-            if (sorpresas.get(1) instanceof Acelerar) {
-                poderes += " A";
-            }
-        }
-        finsonido(murio,teletransporta,llega);
     }
     @Override
     public boolean interacciones(ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,InputStream pierde, Clip murio){
@@ -258,6 +264,19 @@ public  class Player extends Jugador {
     public void perdio(){
         super.perdio(300);
 
+    }
+    public void setlives(int vidas){
+        for (int i=10; i>Integer.valueOf(vidas);i--){
+            super.setCantidadLives();
+        }
+        for(int i=0;i<Integer.valueOf(vidas);i++){
+            super.setAssetLives(i);
+        }
+    }public void setScore(int score){
+        this.score=score;
+    }
+    public void setTexture(){
+        texture=personaje.get(0);
     }
     public void iniciapausa(){
         super.iniciapausa();

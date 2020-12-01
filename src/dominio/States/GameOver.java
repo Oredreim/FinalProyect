@@ -1,5 +1,6 @@
 package dominio.States;
 
+import dominio.Guardar;
 import dominio.Vector2D;
 import presentacion.Button;
 import presentacion.*;
@@ -16,8 +17,14 @@ public class GameOver extends State {
     private String string;
     private String text;
     private int score;
+    private boolean superado=false;
     protected Clip backsound = AudioSystem.getClip();
-    public GameOver(int tipo, String text, int score, String string, ArrayList<BufferedImage>personaje1, ArrayList<BufferedImage>personaje2, BufferedImage background,String res) throws LineUnavailableException {
+    public GameOver(int tipo, String text, int score, String string, ArrayList<BufferedImage>personaje1, ArrayList<BufferedImage>personaje2, BufferedImage background,String res,int tipomachine1,int tipomachine2,ArrayList<String>puntajes) throws LineUnavailableException {
+        if(score>Integer.valueOf(puntajes.get(tipo-1))){
+            superado=true;
+            puntajes.set(0,Integer.toString(score));
+            Guardar.guarda(puntajes,"C:\\Users\\urrea\\IdeaProjects\\FinalProyect\\src\\res\\HIScores.txt");
+        }
         if(res=="w"){
             Sounds.reproduce(backsound,Sounds.win,false);
         }
@@ -55,14 +62,18 @@ public class GameOver extends State {
                 new Action() {
                     @Override
                     public void doAction() throws LineUnavailableException {
-                        //GameState.getPlayer().setName(nombre1);
-                        //GameState.getPlayer2().setName(nombre2);
                         Sounds.close(backsound);
                         if(tipo==1){
-                            State.changeState(new GameState(tipo,personaje1,background,string));
+                            State.changeState(new GameState(tipo,personaje1,background,string,puntajes));
                         }
                         else if(tipo==2){
-                            State.changeState(new GameStateVSplayer(tipo,personaje1,personaje2,background,string));
+                            State.changeState(new GameStateVSplayer(tipo,personaje1,personaje2,background,string,puntajes));
+                        }
+                        else if(tipo==3){
+                            State.changeState(new GameStateVSmachine(tipo,personaje1,personaje2,background,string,tipomachine2,puntajes));
+                        }
+                        else if(tipo==4){
+                            State.changeState(new GameStateSpectate(tipo,personaje1,personaje2,background,string,tipomachine1,tipomachine2,puntajes));
                         }
                     }
                 }
@@ -83,6 +94,9 @@ public class GameOver extends State {
     public void draw(Graphics g) {
         Text.drawText(g,text,new Vector2D(500,100),true, Color.WHITE,Assets.fontEnd);
         Text.drawText(g,Integer.toString(score),new Vector2D(500,300),true, Color.WHITE,Assets.fontEnd);
+        if(superado){
+            Text.drawText(g,Integer.toString(score),new Vector2D(500,500),true, Color.RED,Assets.fontEnd);
+        }
         for(Button b: buttons) {
             b.draw(g);
         }
