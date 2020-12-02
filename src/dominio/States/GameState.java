@@ -28,6 +28,10 @@ public class GameState extends States {
     protected ArrayList<Ganar> win = new ArrayList<>();
     private ArrayList<String>puntajes;
 
+    /**
+     * Constructor del estado actual que se mostrara.
+     * @return del estado a mostrar.
+     */
     public GameState(int tipo,ArrayList<BufferedImage> personaje, BufferedImage background, String string,ArrayList<String>puntajes) throws LineUnavailableException {
         this();
         this.puntajes=puntajes;

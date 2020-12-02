@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 public class CarA extends Car{
 
     /**
-     * Constructo de los carros.
+     * Constructor de los carros tipo A.
      * @param position, Posicion del carro en eje X y Y.
      * @param texture, imagen del carro.
      */
