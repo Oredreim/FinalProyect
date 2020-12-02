@@ -53,6 +53,11 @@ public class Sounds {
         llegap1= Assets.class.getResourceAsStream("/res/llega.wav");
         llegap2= Assets.class.getResourceAsStream("/res/llega1.wav");
     }
+
+    /**
+     * Metodo para recargar los sonidos del juego.
+     * @param back
+     */
     public static void recarga(InputStream back){
         if(back.equals(inicia)){
             inicia = Assets.class.getResourceAsStream("/res/start.wav");
@@ -122,6 +127,13 @@ public class Sounds {
         }
     }
 
+    /**
+     * Metodo que reproduce los sonidos. 
+     * @param backsound, el sonido a reproducir.
+     * @param back, 
+     * @param loop, saber si continua sonando o no.
+     */
+
     public static void reproduce(Clip backsound, InputStream back,boolean loop){
         try {
             backsound.open(AudioSystem.getAudioInputStream(back));
@@ -135,11 +147,7 @@ public class Sounds {
             System.out.println(fallo);
         }
     }
-    /*public static void reinicia(Clip backsound){
-        backsound.stop();
-        backsound.setMicrosecondPosition(0);
 
-    }*/
     public static void close(Clip backsound){
         backsound.close();
     }

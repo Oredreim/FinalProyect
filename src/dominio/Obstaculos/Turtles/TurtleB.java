@@ -10,10 +10,19 @@ import java.awt.image.BufferedImage;
 
 public class TurtleB extends Turtle{
     public int repite=0;
+
+    /**
+     * Constructor de las tortugas tipo B.
+     * @param position, posicion de la tortuga.
+     * @param texture, imagen de la tortuga.
+     */
     public TurtleB(Vector2D position, BufferedImage texture) {
         super(position, texture);
     }
 
+     /**
+     * actualiza la tortuga tipo B.
+     */
     public void update(){
         position.setX(position.getX()-speed);
         if(movio == 10 && repite<9){
@@ -61,6 +70,11 @@ public class TurtleB extends Turtle{
             position.setX(GUI.width);
         }
     }
+
+    /**
+     * Dibuja los carros.
+     * @param g, los graficos a mostrar de cada carro.
+     */
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D)g;
@@ -68,6 +82,10 @@ public class TurtleB extends Turtle{
         g2d.drawImage(texture, (int)position.getX(), (int)position.getY(), null);
     }
 
+    /**
+     * obtiene la velocidad de las tortugas.
+     * @return flotante con la velocidad de las tortugas.
+     */
     @Override
     public double getSpeed() {
         return speed;

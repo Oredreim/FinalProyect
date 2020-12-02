@@ -63,6 +63,15 @@ public abstract class Jugador{
     protected int tiempoPower;
     protected double mueve;
 
+    /**
+     * Constructor del jugador.
+     * @param position, posicion donde esta el jugador.
+     * @param texture, imagen del jugador.
+     * @param personaje, las otras imagenes del jugador.
+     * @param vidas, las vidas del jugador.
+     * @param tipo, que tipo de jugador es.
+     * @throws LineUnavailableException
+     */
     public Jugador(Vector2D position, BufferedImage texture, ArrayList<BufferedImage> personaje, ArrayList<Lives> vidas,int tipo) throws LineUnavailableException {
         this.tipo=tipo;
         this.vidas=vidas;
@@ -70,6 +79,16 @@ public abstract class Jugador{
         this.texture = texture;
         this.personaje = personaje;
     }
+
+    /**
+     * las interacciones que tiene el jugador con los demas objetos.
+     * @param cars, los carros con los que choca el jugador.
+     * @param trunks, los camiones con los que choca el jugador.
+     * @param turtles, las tortugas con los que choca el jugador.
+     * @param pierde, Si el jugador perdio.
+     * @param murio, Si el jugador murio(sonido).
+     * @return el estado muerto del jugador.
+     */
     public boolean interacciones(ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles ,InputStream pierde, Clip murio){
         boolean muere=false;
         if (position.getY() < 635 && position.getY() > 410) {
@@ -92,6 +111,12 @@ public abstract class Jugador{
         }
         return muere;
     }
+
+    /**
+     * El choque con los carros.
+     * @param cars, los carros que interactuan con el jugador.
+     * @return si el jugador choco o no con el carro.
+     */
     public boolean cars(ArrayList<Car> cars){
         for (int i = 0; i < cars.size(); i++) {
             double xcar = cars.get(i).position.getX();
@@ -113,6 +138,12 @@ public abstract class Jugador{
         }
         return false;
     }
+
+    /**
+     * El choque con los camiones.
+     * @param cars, los camiones que interactuan con el jugador.
+     * @return si el jugador choco o no con los camiones.
+     */
     public boolean trunks(ArrayList<Trunk> trunks){
         for (int i = 0; i < trunks.size(); i++) {
             double xtrunk = trunks.get(i).position.getX();
@@ -137,6 +168,12 @@ public abstract class Jugador{
         }
         return true;
     }
+
+    /**
+     * El choque con las tortugas.
+     * @param cars, las tortugas que interactuan con el jugador.
+     * @return si el jugador choco o no con las tortugas.
+     */
     public boolean turtles(ArrayList<Turtle> turtles){
         for (int i = 0; i < turtles.size(); i++) {
             double xturtle = turtles.get(i).position.getX();
@@ -168,6 +205,12 @@ public abstract class Jugador{
         texture = personaje.get(0);
         return true;
     }
+
+    /**
+     * El choque con los charcos.
+     * @param cars, los charcos que interactuan con el jugador.
+     * @return si el jugador choco o no con los charcos.
+     */
     public boolean charcos(ArrayList<Charco> charcos){
         for (int i = 0; i < charcos.size(); i++) {
             double xcharco = charcos.get(i).position.getX();
@@ -192,6 +235,12 @@ public abstract class Jugador{
         }
         return false;
     }
+
+    /**
+     * El choque con las sorpressas.
+     * @param cars, las sorpressas que interactuan con el jugador.
+     * @return si el jugador choco o no con las sorpressas.
+     */
     public void sorpresas(ArrayList<Sorpresas> sorpresas){
         for (int i = 0; i < sorpresas.size(); i++) {
             double xsorpresa = sorpresas.get(i).position.getX();
@@ -217,6 +266,10 @@ public abstract class Jugador{
             }
         }
     }
+
+    /**
+     * Activa el poder que contiene el jugador.
+     */
     public void activaPower(){
         if(sorpresas.get(0) instanceof Caparazon && acelerador==false){
             caparazon=true;
@@ -231,6 +284,12 @@ public abstract class Jugador{
             }
         }
     }
+
+    /**
+     * Mueve al jugador arriba.
+     * @param jump, sonido del jugador.
+     * @param salto, salto del jugador.
+     */
     public void up(Clip jump, InputStream salto){
         if(acelerador==true){
             mueve=4.50;
@@ -267,6 +326,13 @@ public abstract class Jugador{
         movido+=2;
         position.setY(position.getY() - mueve);
     }
+
+    /**
+     * Termina la ejecucion del juego.
+     * @param win, Notifica que el jugador gano.
+     * @param llega, sonido de que el jugador llego y gano.
+     * @param marca
+     */
     public void fin(ArrayList<Ganar> win,Clip llega, InputStream marca){
         presiono="b";
         if(position.getX()>30 && position.getX()<100){
@@ -300,6 +366,12 @@ public abstract class Jugador{
         position.setX(x);
         position.setY(635+42.75);
     }
+
+    /**
+     * Mueve al jugador abajo.
+     * @param jump, sonido del jugador moviendose.
+     * @param salto, salto del jugador.
+     */
     public void  down(Clip jump, InputStream salto){
         if(acelerador==true){
             mueve=4.50;
@@ -329,6 +401,12 @@ public abstract class Jugador{
         movido+=2;
         position.setY(position.getY() + mueve);
     }
+
+    /**
+     * Movimiento a la izquierda del jugador.
+     * @param jump, sonido del jugador.
+     * @param salto, salto del jugador.
+     */
     public void left(Clip jump,InputStream salto){
         if(acelerador==true){
             mueve=4.50;
@@ -357,6 +435,12 @@ public abstract class Jugador{
         movido+=2;
         position.setX(position.getX() - mueve);
     }
+
+    /**
+     * Movimiento a la derecha del jugador.
+     * @param jump, sonido del jugador.
+     * @param salto, salto del jugador.
+     */
     public void right(Clip jump,InputStream salto){
         if(acelerador==true){
             mueve=4.50;
@@ -385,6 +469,11 @@ public abstract class Jugador{
         movido+=2;
         position.setX(position.getX() + mueve);
     }
+
+    /**
+     * ubica al jugador al inicio cuando muere o gana.
+     * @param win, notifica si gano.
+     */
     public void reiniciar(ArrayList<Ganar> win) {
         win.get(0).update( Assets.blanco);
         win.get(1).update( Assets.blanco);
@@ -398,6 +487,10 @@ public abstract class Jugador{
         position.setX(x);
         position.setY(635);
     }
+
+    /**
+     * muestra las vidas del jugador disponibles.
+     */
     public void cargavidas(){
         if(lives==10){
             score+=1000;
@@ -408,6 +501,13 @@ public abstract class Jugador{
             vidas.get(i).update(personaje.get(14));
         }
     }
+
+    /**
+     * termina de ejecutar los sonidos.
+     * @param murio, si muere el jugador.
+     * @param teletransporta, si se teletransporta el jugador.
+     * @param llegi, si llego el jugador
+     */
     public void finsonido(Clip murio, Clip teletransporta, Clip llegi){
         if(llegi.getMicrosecondPosition()==llegi.getMicrosecondLength() && llegi.getMicrosecondLength()!=0){
             Sounds.close(llegi);
@@ -421,16 +521,43 @@ public abstract class Jugador{
             Sounds.close(teletransporta);
         }
     }
+
+    /**
+     * obtiene las vidas del jugador
+     * @return cantidad de vidas.
+     */
     public abstract int getLives();
+
+    /**
+     * obtiene el puntaje del jugador.
+     * @return cantidad de puntos totales del jugador.
+     */
     public abstract int getScore();
+
+    /**
+     * Vuelve al estado inicial.
+     */
     public abstract void caambiaincial();
+
+    /**
+     * inicia la pausa del juego.
+     */
     public void iniciapausa(){
         pausestart=new Date();
     }
+
+    /**
+     * termina la pausa del juego.
+     */
     public void terminapausa(){
         pauseend=new Date();
         tiempopausa+=(int)((pauseend.getTime()-pausestart.getTime())/1000);
     }
+
+    /**
+     * notifica que el jugador perdio.
+     * @param x, La posicion del jugador.
+     */
     public void perdio(double x){
         if(caparazon){
             caparazon=false;
@@ -452,15 +579,38 @@ public abstract class Jugador{
         position.setY(635);
         texture=personaje.get(0);
     }
+
+    /**
+     * Cambia las vidas del jugador cada que pierde.
+     */
     public void setCantidadLives(){
         lives--;
         vidas.get(lives).update(Assets.blanco);
     }
+
+    /**
+     * quita las vidas del jugador que perdio.
+     * @param i, numero de la vida.
+     */
     public void setAssetLives(int i){
         vidas.get(i).update(personaje.get(14));
     }
+
+    /**
+     * actualiza el jugador.
+     * @param win, si gano.
+     * @param cars, los carros con los que interactua.
+     * @param trunks, los camiones con los que interactua.
+     * @param turtles, las tortugas con las que interactua.
+     * @param charcos, los charcos con los que interactua.
+     * @param powers, los poderes con los que interactua.
+     */
     public abstract void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles,ArrayList<Charco> charcos, ArrayList<Sorpresas> powers);
 
+    /**
+     * dibuja el jugador.
+     * @param g, grafico del jugador.
+     */
     public abstract void draw(Graphics g);
 
 }

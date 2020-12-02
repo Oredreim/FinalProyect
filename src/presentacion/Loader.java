@@ -9,6 +9,12 @@ import java.io.InputStream;
 
 public class Loader {
 
+
+    /**
+     * carga las imagenes(recursos) para mostrar en la interfaz.
+     * @param path, recibe la ruta en la que esta la imagen.
+     * @return retorna la imagen cargada.
+     */
     public static BufferedImage imageLoader(String path){
         try {
             return ImageIO.read(Loader.class.getResource(path));
@@ -17,6 +23,12 @@ public class Loader {
         }
         return null;
     }
+    /**
+     * carga las fuentes de texto para mostrarlas en la interfaz.
+     * @param path, recibe la ruta en la que esta la imagen.
+     * @param size, el tamaño que se desea la fuente.
+     * @return retorna la fuente cargada.
+     */
 
     public static Font loadFont(String path, int size) {
         try {
@@ -27,6 +39,12 @@ public class Loader {
         }
     }
 
+
+    /**
+     * carga los sonidos para reproducirlos en la interfaz.
+     * @param path, recibe la ruta en la que esta la imagen.
+     * @return retorna la musica cargada.
+     */
     public static Clip loadSound(String path) {
         try {
             Clip clip = AudioSystem.getClip();

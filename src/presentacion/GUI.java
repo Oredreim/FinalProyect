@@ -25,6 +25,10 @@ public class GUI extends JFrame implements Runnable {
     private KeyBoard keyBoard;
     private MouseInput mouseInput;
 
+    /**
+     * Metodo que crea todo el panel(juego)
+     * 
+     */
 
     public GUI() {
         setTitle("Frogger-GAME");
@@ -56,6 +60,12 @@ public class GUI extends JFrame implements Runnable {
         new GUI().start();
     }
 
+
+    /**
+     * Metodo que actualiza siempre lo que sucede en el juego.
+     * @param dt, delta tiempo para controlar los procesos.
+     * @throws Exception, exepcion para el cambio de estados, pantallas del juego.
+     */
     private void update(float dt) throws Exception {
     	//Se actualiza el tablero que se esta utilizando
         keyBoard.update();

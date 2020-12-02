@@ -27,21 +27,44 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
+
 public class machine1 extends Jugador {
     private static int tipomachine;
     private int num;
+    /**
+     * Constructor del jugador.
+     * @param position, posicion donde esta el jugador.
+     * @param texture, imagen del jugador.
+     * @param personaje, las otras imagenes del jugador.
+     * @param vidas, las vidas del jugador.
+     * @param tipo, que tipo de jugador es.
+     * @throws LineUnavailableException
+     */
     public machine1(Vector2D position, BufferedImage texture, ArrayList<BufferedImage> personaje, ArrayList<Lives> vidas, int tipo, int tipomachine) throws LineUnavailableException {
         super(position, texture, personaje, vidas, tipo);
         this.tipomachine=tipomachine;
         x = 300;
     }
+
+    /**
+     * que tipo de machina se va a jugar.
+     * @return la maquina seleccionada.
+     */
     public static int getTipomachine() {
         return tipomachine;
     }
+
+    /**
+     * cambia el tipo de maquina.
+     * @param tipomachine, la maquina seleccionada.
+     */
     public void setTipomachine(int tipomachine){
         this.tipomachine=tipomachine;
     }
 
+    /**
+     * mueve la maquina por los charcos.
+     */
     public void desliza() {
         if (!charco) {
             Sounds.reproduce(teletransporta, Sounds.teletransportap2, false);
@@ -58,11 +81,24 @@ public class machine1 extends Jugador {
         }
     }
 
+    /**
+     * termina de ejecutar los sonidos.
+     * @param murio, si muere el jugador.
+     * @param teletransporta, si se teletransporta el jugador.
+     * @param llegi, si llego el jugador
+     */
     @Override
     public void finsonido(Clip murio, Clip teletransporta, Clip llego) {
         super.finsonido(murio, teletransporta, llego);
     }
 
+    /**
+     * verifica si llego el jugador.
+     * @param win, si gano.
+     * @param cars, los carros.
+     * @param trunks, los camiones.
+     * @param turtles, las tortugas.
+     */
     public void verificar(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles) {
         muere = interacciones(cars, trunks, turtles, Sounds.pierdep1, murio);
         if (llego == 7) {
@@ -74,11 +110,17 @@ public class machine1 extends Jugador {
         }
     }
 
-
+    /**
+     * Activa el poder que contiene el jugador.
+     */
     public void activaPower() {
         super.activaPower();
     }
 
+    /**
+     * mueve la maquina
+     * @param win, si gana el jugador.
+     */
     public void movimiento(ArrayList<Ganar> win) {
         if(tipomachine==1 && movido==0 && !jump.isOpen()){
             num= Irreflexiva.generaMovimiento();
@@ -115,6 +157,9 @@ public class machine1 extends Jugador {
 
     }
 
+    /**
+     * el timepo propio del jugador.
+     */
     public void tiempo() {
         end = new Date();
         interval = 30 - (int) ((end.getTime() - start.getTime()) / 1000) + tiempopausa;
@@ -136,10 +181,17 @@ public class machine1 extends Jugador {
         }
     }
 
+    /**
+     * las sorpresas con las que interactua.
+     * @param powers, todos los poderes disponibles.
+     */
     public void sorpresas(ArrayList<Sorpresas> powers) {
         super.sorpresas(powers);
     }
 
+    /**
+     * los poderes activos del jugador.
+     */
     public void activos() {
         if (interval == tiempoPower && caparazon == true) {
             caparazon = false;
@@ -150,6 +202,15 @@ public class machine1 extends Jugador {
         }
     }
 
+    /**
+    * actualiza el jugador.
+    * @param win, si gano.
+    * @param cars, los carros con los que interactua.
+    * @param trunks, los camiones con los que interactua.
+    * @param turtles, las tortugas con las que interactua.
+    * @param charcos, los charcos con los que interactua.
+    * @param powers, los poderes con los que interactua.
+    */
     @Override
     public void update(ArrayList<Ganar> win, ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles, ArrayList<Charco> charcos, ArrayList<Sorpresas> powers) {
         if(!States.salir) {
@@ -194,22 +255,44 @@ public class machine1 extends Jugador {
         }
     }
 
+    /**
+     * las interacciones que tiene el jugador con los demas objetos.
+     * @param cars, los carros con los que choca el jugador.
+     * @param trunks, los camiones con los que choca el jugador.
+     * @param turtles, las tortugas con los que choca el jugador.
+     * @param pierde, Si el jugador perdio.
+     * @param murio, Si el jugador murio(sonido).
+     * @return el estado muerto del jugador.
+     */
     @Override
     public boolean interacciones(ArrayList<Car> cars, ArrayList<Trunk> trunks, ArrayList<Turtle> turtles, InputStream pierde, Clip murio) {
         return super.interacciones(cars, trunks, turtles, pierde, murio);
 
     }
 
+    /**
+     * El choque con los charcos.
+     * @param cars, los charcos que interactuan con el jugador.
+     * @return si el jugador choco o no con los charcos.
+     */
     @Override
     public boolean charcos(ArrayList<Charco> charcos) {
         return super.charcos(charcos);
     }
 
+    /**
+     * obtiene el puntaje del jugador.
+     * @return cantidad de puntos totales del jugador.
+     */
     @Override
     public int getScore() {
         return score;
     }
 
+    /**
+     * obtiene las vidas del jugador
+     * @return cantidad de vidas.
+     */
     @Override
     public int getLives() {
         return lives;
@@ -220,6 +303,10 @@ public class machine1 extends Jugador {
         super.cargavidas();
     }
 
+    /**
+     * dibuja el jugador.
+     * @param g, grafico del jugador.
+     */
     @Override
     public void draw(Graphics g) {
         if (score < 0) {
@@ -235,48 +322,91 @@ public class machine1 extends Jugador {
         g2d.drawImage(texture, (int) position.getX(), (int) position.getY(), null);
     }
 
+    /**
+     * Mueve al jugador arriba.
+     * @param jump, sonido del jugador.
+     * @param salto, salto del jugador.
+     */
     @Override
     public void up(Clip jump, InputStream sonido) {
         super.up(jump, sonido);
     }
 
+    /**
+     * Termina la ejecucion del juego.
+     * @param win, Notifica que el jugador gano.
+     * @param llega, sonido de que el jugador llego y gano.
+     * @param marca
+     */
     @Override
     public void fin(ArrayList<Ganar> win, Clip jump, InputStream sonido) {
         super.fin(win, jump, sonido);
     }
 
+    /**
+     * Mueve al jugador abajo.
+     * @param jump, sonido del jugador moviendose.
+     * @param salto, salto del jugador.
+     */
     @Override
     public void down(Clip jump, InputStream sonido) {
         super.down(jump, sonido);
     }
 
+    /**
+     * Movimiento a la izquierda del jugador.
+     * @param jump, sonido del jugador.
+     * @param salto, salto del jugador.
+     */
     @Override
     public void left(Clip jump, InputStream sonido) {
         super.left(jump, sonido);
     }
 
+    /**
+     * Movimiento a la derecha del jugador.
+     * @param jump, sonido del jugador.
+     * @param salto, salto del jugador.
+     */
     @Override
     public void right(Clip jump, InputStream sonido) {
         super.right(jump, sonido);
     }
 
+    /**
+     * ubica al jugador al inicio cuando muere o gana.
+     * @param win, notifica si gano.
+     */
     @Override
     public void reiniciar(ArrayList<Ganar> win) {
         super.reiniciar(win);
     }
 
+    /**
+     * optiene la posicion del jugador.
+     * @return la posicion del jugador.
+     */
     public Vector2D getPosition() {
         return position;
     }
 
+    /**
+     * cambia la posicion del jugador.
+     * @param position
+     */
     public void setPosition(Vector2D position) {
         this.position = position;
     }
 
+    /**
+     * optiene la imagen del jugador.
+     * @return la imagen del jugador.
+     */
     public BufferedImage getTexture() {
         return this.texture;
     }
 
+    
     @Override
     public void caambiaincial() {
         start = new Date();

@@ -16,6 +16,15 @@ public class Message {
     private Font font;
     private final float deltaAlpha = 0.01f;
 
+    /**
+     * contructor de los mensajes textuales.
+     * @param position, posicion de donde saldra la imagen.
+     * @param fade
+     * @param text, el texto a mostrar en pantalla.
+     * @param color, el color del texto.
+     * @param center, comprobar si esta centrado.
+     * @param font, tipo de fuente del texto.
+     */
     public Message(Vector2D position, boolean fade, String text, Color color,
                    boolean center, Font font) {
         this.font = font;
@@ -32,6 +41,10 @@ public class Message {
 
     }
 
+    /**
+     * dibuja la fuente.
+     * @param g2d, recibe los graficos a mostrar en la interfaz.
+     */
     public void draw(Graphics2D g2d) {
 
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));

@@ -8,6 +8,16 @@ import java.awt.Graphics;
 import dominio.*;
 
 public class Text {
+
+    /**
+     * contructor de los textos.
+     * @param g, el grafico a mostar,
+     * @param text, el texto a mostrar.
+     * @param pos, la posicion del texto.
+     * @param center, si el texto esta centrado.
+     * @param color, tipo de color del texto.
+     * @param font, tipo de fuente de texto.
+     */
     public static void drawText(Graphics g, String text, Vector2D pos, boolean center, Color color, Font font) {
         g.setColor(color);
         g.setFont(font);

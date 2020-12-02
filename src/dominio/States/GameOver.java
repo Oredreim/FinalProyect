@@ -19,6 +19,11 @@ public class GameOver extends State {
     private int score;
     private boolean superado=false;
     protected Clip backsound = AudioSystem.getClip();
+
+    /**
+     * Constructor del estado actual que se mostrara.
+     * @return del estado a mostrar.
+     */
     public GameOver(int tipo, String text, int score, String string, ArrayList<BufferedImage>personaje1, ArrayList<BufferedImage>personaje2, BufferedImage background,String res,int tipomachine1,int tipomachine2,ArrayList<String>puntajes) throws LineUnavailableException {
         if(score>Integer.valueOf(puntajes.get(tipo-1))){
             superado=true;
@@ -80,6 +85,9 @@ public class GameOver extends State {
 
         ));
     }
+    /**
+     * actualiza el estado.
+     */
     @Override
     public void update() throws LineUnavailableException {
         if(backsound.getMicrosecondLength()==backsound.getMicrosecondPosition()){
@@ -90,6 +98,10 @@ public class GameOver extends State {
         }
     }
 
+    /**
+     * dibuja el estado.
+     * @param g, grafico del estado.
+     */
     @Override
     public void draw(Graphics g) {
         Text.drawText(g,text,new Vector2D(500,100),true, Color.WHITE,Assets.fontEnd);

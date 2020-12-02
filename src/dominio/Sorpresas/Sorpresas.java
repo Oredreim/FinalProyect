@@ -16,19 +16,26 @@ public abstract class Sorpresas {
     public Vector2D position;
     protected boolean dead;
 
+    /**
+     * Constructor de la sorpresa.
+     * @param position, posicion donde estara la sorpresa.
+     * @param texture, textura de la sorpresa.
+     */
     public Sorpresas(Vector2D position, BufferedImage texture) {
         
         this.position = position;
         this.texture = texture;
     }
 
-    //Clase abstracta que actualiza el estado del juego con respecto al poder
-    //@Param Ball ball que define la bola del juego a la que afecta el poder
-    //@Param player player jugador 1 
-    //@Param player player2 jugador 2
-    //@Param float dt que maneja una diferencia de tiempo
+    /**
+     * actualiza el poder.
+     */
     public abstract void update();
 
+    /**
+     * dibuja el poder.
+     * @param g, grafico a dibujar.
+     */
     public abstract void draw(Graphics g);
 
 }

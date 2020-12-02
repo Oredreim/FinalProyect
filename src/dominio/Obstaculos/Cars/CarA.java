@@ -9,10 +9,19 @@ import java.awt.image.BufferedImage;
 
 public class CarA extends Car{
 
+    /**
+     * Constructo de los carros.
+     * @param position, Posicion del carro en eje X y Y.
+     * @param texture, imagen del carro.
+     */
     public CarA(Vector2D position, BufferedImage texture) {
         super(position, texture);
     }
 
+    /**
+     * Actualiza los carros.
+     * @param a, para saber la direccion en la que va el carro.
+     */
     public void update(int a) {
         position.setX(position.getX()+speed);
 
@@ -21,6 +30,10 @@ public class CarA extends Car{
         }
     }
 
+    /**
+     * Dibuja los carros.
+     * @param g, los graficos a mostrar de cada carro.
+     */
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D)g;

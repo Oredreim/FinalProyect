@@ -21,6 +21,12 @@ public class MenuState extends State{
     File archivo;
     FileInputStream entrada;
     protected Clip moneda= AudioSystem.getClip();;
+
+    /**
+     * contructor de la clase MenuState, construye los botones y la primera interfaz.
+     * @param string, uy no nos acordamos para que es el string.
+     * @throws LineUnavailableException
+     */
     public MenuState(String string) throws LineUnavailableException {
         ArrayList<String> puntajes= Abrir.leer("C:\\Users\\urrea\\IdeaProjects\\FinalProyect\\src\\res\\HIScores.txt");
         Sounds.init();
@@ -127,6 +133,10 @@ public class MenuState extends State{
 
     }
 
+    /**
+     * Actualiza la clase MenuState. 
+     */
+
     @Override
     public void update() throws LineUnavailableException {
         for(Button b: buttons) {
@@ -134,6 +144,10 @@ public class MenuState extends State{
         }
     }
 
+    /**
+     * dibuja todo lo de la clase MenuState
+     * @param g, recibe los graficos para dibujarlos.
+     */
     @Override
     public void draw(Graphics g) {
         for(Button b: buttons) {
