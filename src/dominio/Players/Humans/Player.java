@@ -65,7 +65,7 @@ public  class Player extends Jugador {
      * termina de ejecutar los sonidos.
      * @param murio, si muere el jugador.
      * @param teletransporta, si se teletransporta el jugador.
-     * @param llegi, si llego el jugador
+     * @param llego, si llego el jugador
      */
     @Override
     public void finsonido(Clip murio, Clip teletransporta, Clip llego){
@@ -269,7 +269,7 @@ public  class Player extends Jugador {
 
     /**
      * El choque con los charcos.
-     * @param cars, los charcos que interactuan con el jugador.
+     * @param charcos, los charcos que interactuan con el jugador.
      * @return si el jugador choco o no con los charcos.
      */
     @Override
@@ -321,7 +321,7 @@ public  class Player extends Jugador {
     /**
      * Mueve al jugador arriba.
      * @param jump, sonido del jugador.
-     * @param salto, salto del jugador.
+     * @param sonido, salto del jugador.
      */
     @Override
     public void up(Clip jump, InputStream sonido){
@@ -331,8 +331,8 @@ public  class Player extends Jugador {
     /**
      * Termina la ejecucion del juego.
      * @param win, Notifica que el jugador gano.
-     * @param llega, sonido de que el jugador llego y gano.
-     * @param marca
+     * @param sonido, sonido de que el jugador llego y gano.
+     * @param jump, clip de sonido
      */
     @Override
     public void fin(ArrayList<Ganar> win,Clip jump, InputStream sonido){
@@ -341,8 +341,8 @@ public  class Player extends Jugador {
 
     /**
      * Mueve al jugador abajo.
-     * @param jump, sonido del jugador moviendose.
-     * @param salto, salto del jugador.
+     * @param jump, clip de sonido .
+     * @param sonido, sonido del jugador moviendose.
      */
     @Override
     public void  down(Clip jump, InputStream sonido){
@@ -351,8 +351,8 @@ public  class Player extends Jugador {
 
     /**
      * Movimiento a la izquierda del jugador.
-     * @param jump, sonido del jugador.
-     * @param salto, salto del jugador.
+     * @param jump, clip de sonido.
+     * @param sonido, salto del jugador.
      */
     @Override
     public void left(Clip jump, InputStream sonido){
@@ -361,8 +361,8 @@ public  class Player extends Jugador {
 
     /**
      * Movimiento a la derecha del jugador.
-     * @param jump, sonido del jugador.
-     * @param salto, salto del jugador.
+     * @param jump, clip de sonido.
+     * @param sonido, salto del jugador.
      */
     @Override
     public void right(Clip jump, InputStream sonido){
